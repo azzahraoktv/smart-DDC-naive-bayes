@@ -1,0 +1,63 @@
+[28-Dec-2025 19:06:41 Europe/Berlin] === LOGIN PROCESS START ===
+[28-Dec-2025 19:06:41 Europe/Berlin] ✅ Database connection OK
+[28-Dec-2025 19:06:41 Europe/Berlin] Raw input - Username: 'admin'
+[28-Dec-2025 19:06:41 Europe/Berlin] Raw input - Password: 'admin123'
+[28-Dec-2025 19:06:41 Europe/Berlin] Processing login for: 'admin'
+[28-Dec-2025 19:06:41 Europe/Berlin] SQL dengan parameter: SELECT id_user, username, password, nama_lengkap FROM users WHERE username = ? LIMIT 1
+[28-Dec-2025 19:06:41 Europe/Berlin] ❌ User NOT found via fetchOne with username: 'admin'
+[28-Dec-2025 19:06:41 Europe/Berlin] Trying direct query for debugging...
+[28-Dec-2025 19:06:41 Europe/Berlin] Trying Case insensitive: SELECT * FROM users WHERE username = 'admin'
+[28-Dec-2025 19:06:41 Europe/Berlin] ✅ Case insensitive FOUND USER!
+[28-Dec-2025 19:06:41 Europe/Berlin] Found data: Array
+(
+    [id] => 1
+    [username] => admin
+    [password] => admin123
+    [nama_lengkap] => Pustakawan
+    [role] => pustakawan
+)
+
+[28-Dec-2025 19:06:41 Europe/Berlin] Listing ALL users in database:
+[28-Dec-2025 19:06:41 Europe/Berlin]    Username: 'admin' (Length: 5)
+[28-Dec-2025 19:06:46 Europe/Berlin] === LOGIN PROCESS START ===
+[28-Dec-2025 19:06:46 Europe/Berlin] ✅ Database connection OK
+[28-Dec-2025 19:06:46 Europe/Berlin] Raw input - Username: 'admin'
+[28-Dec-2025 19:06:46 Europe/Berlin] Raw input - Password: 'admin123'
+[28-Dec-2025 19:06:46 Europe/Berlin] Processing login for: 'admin'
+[28-Dec-2025 19:06:46 Europe/Berlin] SQL dengan parameter: SELECT id_user, username, password, nama_lengkap FROM users WHERE username = ? LIMIT 1
+[28-Dec-2025 19:06:46 Europe/Berlin] ❌ User NOT found via fetchOne with username: 'admin'
+[28-Dec-2025 19:06:46 Europe/Berlin] Trying direct query for debugging...
+[28-Dec-2025 19:06:46 Europe/Berlin] Trying Case insensitive: SELECT * FROM users WHERE username = 'admin'
+[28-Dec-2025 19:06:46 Europe/Berlin] ✅ Case insensitive FOUND USER!
+[28-Dec-2025 19:06:46 Europe/Berlin] Found data: Array
+(
+    [id] => 1
+    [username] => admin
+    [password] => admin123
+    [nama_lengkap] => Pustakawan
+    [role] => pustakawan
+)
+
+[28-Dec-2025 19:06:46 Europe/Berlin] Listing ALL users in database:
+[28-Dec-2025 19:06:46 Europe/Berlin]    Username: 'admin' (Length: 5)
+[28-Dec-2025 19:06:49 Europe/Berlin] === LOGIN PROCESS START ===
+[28-Dec-2025 19:06:49 Europe/Berlin] ✅ Database connection OK
+[28-Dec-2025 19:06:49 Europe/Berlin] Raw input - Username: 'admin'
+[28-Dec-2025 19:06:49 Europe/Berlin] Raw input - Password: 'admin123'
+[28-Dec-2025 19:06:49 Europe/Berlin] Processing login for: 'admin'
+[28-Dec-2025 19:06:49 Europe/Berlin] SQL dengan parameter: SELECT id_user, username, password, nama_lengkap FROM users WHERE username = ? LIMIT 1
+[28-Dec-2025 19:06:49 Europe/Berlin] ❌ User NOT found via fetchOne with username: 'admin'
+[28-Dec-2025 19:06:49 Europe/Berlin] Trying direct query for debugging...
+[28-Dec-2025 19:06:49 Europe/Berlin] Trying Case insensitive: SELECT * FROM users WHERE username = 'admin'
+[28-Dec-2025 19:06:49 Europe/Berlin] ✅ Case insensitive FOUND USER!
+[28-Dec-2025 19:06:49 Europe/Berlin] Found data: Array
+(
+    [id] => 1
+    [username] => admin
+    [password] => admin123
+    [nama_lengkap] => Pustakawan
+    [role] => pustakawan
+)
+
+[28-Dec-2025 19:06:49 Europe/Berlin] Listing ALL users in database:
+[28-Dec-2025 19:06:49 Europe/Berlin]    Username: 'admin' (Length: 5)
