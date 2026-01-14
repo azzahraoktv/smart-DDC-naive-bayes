@@ -18,7 +18,7 @@ $base_url = '/smart-ddc/';
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Dashboard Admin - Klasifikasi DDC (Smart System)</title>
+    <title>Smart DDC</title>
 
     <!-- CSS & JS Resources -->
     <script src="https://cdn.tailwindcss.com"></script>

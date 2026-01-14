@@ -11,55 +11,242 @@
   </p>
 </div>
 
+<!-- TABS UNTUK MODE INPUT -->
+<div class="mb-6">
+  <div class="border-b border-gray-200">
+    <nav class="flex -mb-px">
+      <button id="tab-single" onclick="switchTab('single')" class="tab-button active py-4 px-6 text-sm font-medium text-center border-b-2 border-transparent hover:text-blue-600 hover:border-blue-300 transition-all duration-300">
+        <i data-feather="book" class="w-4 h-4 mr-2 inline"></i>
+        Input Tunggal
+      </button>
+      <button id="tab-multiple" onclick="switchTab('multiple')" class="tab-button py-4 px-6 text-sm font-medium text-center border-b-2 border-transparent hover:text-blue-600 hover:border-blue-300 transition-all duration-300">
+        <i data-feather="list" class="w-4 h-4 mr-2 inline"></i>
+        Input Multiple
+      </button>
+    </nav>
+  </div>
+</div>
+
 <div class="space-y-8">
-  <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-8 card-hover">
-    <h2 class="text-xl font-bold text-gray-800 mb-6 flex items-center">
-      <i data-feather="edit-3" class="mr-2 w-5 h-5 text-blue-600"></i> Detail Buku
-    </h2>
+  <!-- TAB INPUT TUNGGAL -->
+  <div id="tab-content-single" class="tab-content">
+    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-8 card-hover">
+      <h2 class="text-xl font-bold text-gray-800 mb-6 flex items-center">
+        <i data-feather="edit-3" class="mr-2 w-5 h-5 text-blue-600"></i> Detail Buku (Tunggal)
+      </h2>
 
-    <div class="mb-6">
-      <label class="block text-sm font-medium text-gray-700 mb-2"
-        >Judul Buku <span class="text-red-500">*</span></label
-      >
-      <input
-        type="text"
-        id="inputJudul"
-        class="w-full px-4 py-3 input-modern rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-lg"
-        placeholder="Contoh: Belajar Jaringan Komputer"
-        required
-      />
-    </div>
+      <div class="mb-6">
+        <label class="block text-sm font-medium text-gray-700 mb-2"
+          >Judul Buku <span class="text-red-500">*</span></label
+        >
+        <input
+          type="text"
+          id="inputJudul"
+          class="w-full px-4 py-3 input-modern rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-lg"
+          placeholder="Contoh: Belajar Jaringan Komputer"
+          required
+        />
+      </div>
 
-    <div class="mb-6">
-      <label class="block text-sm font-medium text-gray-700 mb-2"
-        >Deskripsi Singkat
-        <span class="text-gray-400 text-xs">(Opsional - meningkatkan akurasi)</span></label
-      >
-      <textarea
-        id="inputDeskripsi"
-        rows="4"
-        class="w-full px-4 py-3 input-modern rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
-        placeholder="Deskripsi singkat buku..."
-      ></textarea>
-    </div>
+      <div class="mb-6">
+        <label class="block text-sm font-medium text-gray-700 mb-2"
+          >Deskripsi Singkat
+          <span class="text-gray-400 text-xs">(Opsional - meningkatkan akurasi)</span></label
+        >
+        <textarea
+          id="inputDeskripsi"
+          rows="4"
+          class="w-full px-4 py-3 input-modern rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+          placeholder="Deskripsi singkat buku..."
+        ></textarea>
+      </div>
 
-    <div class="flex gap-4">
-      <button
-        onclick="resetInput()"
-        class="w-1/3 bg-gray-100 text-gray-600 border border-gray-300 px-6 py-3 rounded-lg font-medium hover:bg-gray-200 transition-all duration-300 shadow-sm flex items-center justify-center card-hover"
-      >
-        <i data-feather="trash-2" class="mr-2 w-5 h-5"></i> Hapus
-      </button>
-      <button
-        onclick="prosesKlasifikasi()"
-        class="w-2/3 btn-primary text-white px-6 py-3 rounded-lg font-medium shadow-sm flex items-center justify-center text-lg"
-      >
-        <i data-feather="cpu" class="mr-2 w-5 h-5"></i> Proses Klasifikasi
-      </button>
+      <div class="flex gap-4">
+        <button
+          onclick="resetInput()"
+          class="w-1/3 bg-gray-100 text-gray-600 border border-gray-300 px-6 py-3 rounded-lg font-medium hover:bg-gray-200 transition-all duration-300 shadow-sm flex items-center justify-center card-hover"
+        >
+          <i data-feather="trash-2" class="mr-2 w-5 h-5"></i> Hapus
+        </button>
+        <button
+          onclick="prosesKlasifikasi()"
+          class="w-2/3 btn-primary text-white px-6 py-3 rounded-lg font-medium shadow-sm flex items-center justify-center text-lg"
+        >
+          <i data-feather="cpu" class="mr-2 w-5 h-5"></i> Proses Klasifikasi
+        </button>
+      </div>
     </div>
   </div>
 
-  <!-- HASIL KLASIFIKASI (POSISI ATAS) -->
+  <!-- TAB INPUT MULTIPLE (DENGAN FITUR IMPORT EXCEL) -->
+  <div id="tab-content-multiple" class="tab-content hidden">
+    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-8 card-hover">
+      <h2 class="text-xl font-bold text-gray-800 mb-6 flex items-center">
+        <i data-feather="list" class="mr-2 w-5 h-5 text-blue-600"></i> Input Buku Multiple
+      </h2>
+      
+      <!-- CARD IMPOR EXCEL -->
+      <div class="mb-8 bg-blue-50 rounded-xl border border-blue-100 p-6">
+        <h3 class="text-lg font-bold text-blue-800 mb-4 flex items-center">
+          <i data-feather="upload" class="w-5 h-5 mr-2"></i>
+          Impor dari Excel (Opsional)
+        </h3>
+        
+        <div class="text-sm text-blue-700 mb-4">
+          <p class="mb-2">Format file Excel/CSV yang didukung:</p>
+          <ul class="list-disc pl-5 space-y-1">
+            <li><strong>judul</strong> atau <strong>judul_buku</strong> (wajib)</li>
+            <li><strong>deskripsi</strong> atau <strong>keterangan</strong> (opsional)</li>
+            <li>File Excel (.xlsx, .xls) atau CSV (.csv)</li>
+          </ul>
+        </div>
+        
+        <div class="mb-4">
+          <div class="border-2 border-dashed border-blue-300 rounded-xl p-6 text-center hover:border-blue-400 hover:bg-blue-100 transition-all duration-300 cursor-pointer" onclick="document.getElementById('excelFile').click()">
+            <div class="mb-3">
+              <i data-feather="file" class="w-10 h-10 text-blue-500 mx-auto"></i>
+            </div>
+            <input type="file" id="excelFile" accept=".xlsx,.xls,.csv" class="hidden">
+            <div class="text-blue-700 font-medium mb-1">Klik untuk upload file Excel/CSV</div>
+            <div class="text-xs text-blue-600">atau drag & drop file di sini</div>
+            <div class="text-xs text-gray-500 mt-2">Maksimal 5MB, maksimal 100 data</div>
+          </div>
+        </div>
+        
+        <div class="flex gap-3">
+          <button onclick="importFromExcel()" id="importExcelBtn" class="flex-1 bg-blue-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-blue-700 transition-all duration-300 flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed" disabled>
+            <i data-feather="check" class="w-4 h-4 mr-2"></i>
+            Impor Data
+          </button>
+          <button onclick="resetExcelImport()" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg font-medium hover:bg-gray-300 transition-all duration-300 flex items-center">
+            <i data-feather="x" class="w-4 h-4 mr-2"></i>
+            Hapus
+          </button>
+        </div>
+        
+        <div id="excelPreview" class="mt-4 hidden">
+          <div class="flex justify-between items-center mb-2">
+            <h4 class="font-bold text-gray-700">Preview Data</h4>
+            <div class="text-sm text-gray-600">
+              <span id="excelDataCount">0</span> data ditemukan
+            </div>
+          </div>
+          <div class="overflow-x-auto border border-gray-200 rounded-lg max-h-60 overflow-y-auto">
+            <table class="w-full text-sm">
+              <thead class="bg-gray-50 sticky top-0">
+                <tr>
+                  <th class="p-3 text-left font-medium text-gray-700 border-b">No</th>
+                  <th class="p-3 text-left font-medium text-gray-700 border-b">Judul Buku</th>
+                  <th class="p-3 text-left font-medium text-gray-700 border-b">Deskripsi</th>
+                </tr>
+              </thead>
+              <tbody id="excelPreviewBody" class="divide-y divide-gray-200"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      
+      <!-- INPUT MANUAL MULTIPLE -->
+      <div class="mb-6">
+        <div class="flex justify-between items-center mb-4">
+          <h3 class="text-lg font-bold text-gray-800 flex items-center">
+            <i data-feather="edit-2" class="w-5 h-5 mr-2 text-blue-600"></i>
+            Input Manual
+          </h3>
+          <div class="text-sm text-gray-600">
+            <span id="manualCount">1</span> buku ditambahkan
+          </div>
+        </div>
+        
+        <div id="multiple-input-container">
+          <div class="multiple-input-item mb-4 p-4 border border-gray-200 rounded-lg bg-gray-50">
+            <div class="flex justify-between items-center mb-2">
+              <span class="text-sm font-medium text-gray-700">Buku #1</span>
+              <button type="button" onclick="removeMultipleInput(this)" class="text-red-500 hover:text-red-700">
+                <i data-feather="x" class="w-4 h-4"></i>
+              </button>
+            </div>
+            <input type="text" 
+                   class="multiple-judul w-full px-4 py-2 input-modern rounded-lg focus:ring-2 focus:ring-blue-500 outline-none mb-3" 
+                   placeholder="Judul buku"
+                   required>
+            <textarea class="multiple-deskripsi w-full px-4 py-2 input-modern rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-sm" 
+                      rows="2" 
+                      placeholder="Deskripsi (opsional)"></textarea>
+          </div>
+        </div>
+        
+        <button onclick="addMultipleInput()" class="w-full py-3 border-2 border-dashed border-gray-300 rounded-lg text-gray-500 hover:text-blue-600 hover:border-blue-400 transition-all duration-300 flex items-center justify-center">
+          <i data-feather="plus" class="w-4 h-4 mr-2"></i>
+          Tambah Buku
+        </button>
+      </div>
+      
+      <div class="flex gap-4">
+        <button onclick="resetMultipleInput()" class="w-1/3 bg-gray-100 text-gray-600 border border-gray-300 px-6 py-3 rounded-lg font-medium hover:bg-gray-200 transition-all duration-300 shadow-sm flex items-center justify-center card-hover">
+          <i data-feather="trash-2" class="mr-2 w-5 h-5"></i> Reset All
+        </button>
+        <button onclick="prosesKlasifikasiMultiple()" class="w-2/3 btn-primary text-white px-6 py-3 rounded-lg font-medium shadow-sm flex items-center justify-center text-lg">
+          <i data-feather="cpu" class="mr-2 w-5 h-5"></i> Proses Semua Buku
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- TABEL HASIL MULTIPLE -->
+  <div id="multiple-results-container" class="hidden">
+    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-8 card-hover">
+      <h2 class="text-xl font-bold text-gray-800 mb-6 flex items-center">
+        <i data-feather="check-circle" class="mr-2 w-5 h-5 text-green-600"></i> Hasil Klasifikasi Multiple
+      </h2>
+      
+      <div class="mb-6">
+        <div class="flex flex-wrap gap-4 justify-between items-center mb-4">
+          <div class="flex items-center gap-4">
+            <div class="text-sm text-gray-600 bg-gray-100 px-3 py-1 rounded-full">
+              Total: <span id="total-books-count" class="font-bold">0</span> buku
+            </div>
+            <div class="text-sm text-gray-600 bg-blue-100 px-3 py-1 rounded-full">
+              Waktu: <span id="processing-time" class="font-bold">0</span> detik
+            </div>
+          </div>
+          <div class="flex gap-2">
+            <button onclick="exportResultsToExcel()" class="px-4 py-2 bg-green-100 text-green-700 rounded-lg hover:bg-green-200 transition-all duration-300 flex items-center text-sm">
+              <i data-feather="download" class="w-4 h-4 mr-2"></i> Export Excel
+            </button>
+            <button onclick="exportResultsToPDF()" class="px-4 py-2 bg-red-100 text-red-700 rounded-lg hover:bg-red-200 transition-all duration-300 flex items-center text-sm">
+              <i data-feather="file-text" class="w-4 h-4 mr-2"></i> Export PDF
+            </button>
+          </div>
+        </div>
+        
+        <div class="overflow-x-auto border border-gray-200 rounded-lg shadow-sm">
+          <table class="w-full text-sm">
+            <thead class="bg-gray-50">
+              <tr>
+                <th class="p-4 text-left font-bold text-gray-700 border-b">No</th>
+                <th class="p-4 text-left font-bold text-gray-700 border-b">Judul Buku</th>
+                <th class="p-4 text-left font-bold text-gray-700 border-b">Deskripsi</th>
+                <th class="p-4 text-left font-bold text-gray-700 border-b">Kode DDC</th>
+                <th class="p-4 text-left font-bold text-gray-700 border-b">Kategori</th>
+                <th class="p-4 text-left font-bold text-gray-700 border-b">Confidence</th>
+                <th class="p-4 text-left font-bold text-gray-700 border-b">Aksi</th>
+              </tr>
+            </thead>
+            <tbody id="multiple-results-body" class="divide-y divide-gray-200"></tbody>
+          </table>
+        </div>
+      </div>
+      
+      <div class="flex justify-center">
+        <button onclick="closeMultipleResults()" class="px-6 py-3 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-all duration-300 flex items-center">
+          <i data-feather="arrow-left" class="w-4 h-4 mr-2"></i> Kembali ke Input
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- HASIL KLASIFIKASI (POSISI ATAS) - UNTUK SINGLE -->
   <div id="hasil-klasifikasi-card" class="hidden bg-white rounded-xl shadow-md border border-gray-200 overflow-hidden transition-all duration-300 card-hover">
     <div class="p-8 bg-white relative z-10">
       <h3 class="text-xl font-semibold text-gray-700 mb-6 flex items-center">
@@ -216,10 +403,800 @@
 </div>
 
 <script>
-// Variabel global untuk data
+// ==================== VARIABEL GLOBAL ====================
 let dataTraining = [];
 let kategoriDDC = [];
+let multipleResults = []; // Untuk menyimpan hasil multiple
+let importedExcelData = []; // Untuk menyimpan data Excel yang diimpor
+let startTime = 0; // Untuk menghitung waktu processing
 
+// ==================== FUNGSI TAB SWITCHING ====================
+function switchTab(tabName) {
+    // Update tab buttons
+    document.querySelectorAll('.tab-button').forEach(btn => {
+        btn.classList.remove('active', 'text-blue-600', 'border-blue-500');
+        btn.classList.add('text-gray-500');
+    });
+    
+    const activeBtn = document.getElementById(`tab-${tabName}`);
+    if (activeBtn) {
+        activeBtn.classList.add('active', 'text-blue-600', 'border-blue-500');
+        activeBtn.classList.remove('text-gray-500');
+    }
+    
+    // Update tab content
+    document.querySelectorAll('.tab-content').forEach(content => {
+        content.classList.add('hidden');
+    });
+    
+    const activeContent = document.getElementById(`tab-content-${tabName}`);
+    if (activeContent) {
+        activeContent.classList.remove('hidden');
+    }
+    
+    // Reset results view
+    document.getElementById('multiple-results-container').classList.add('hidden');
+    document.getElementById('hasil-klasifikasi-card').classList.add('hidden');
+    document.getElementById('preprocessing-card').classList.add('hidden');
+    document.getElementById('detail-container').classList.add('hidden');
+    
+    feather.replace();
+}
+
+// ==================== FUNGSI INPUT MULTIPLE ====================
+let multipleInputCounter = 1;
+
+function addMultipleInput() {
+    multipleInputCounter++;
+    if (multipleInputCounter > 50) { // Maksimal 50 input manual
+        alert('Maksimal 50 buku untuk input manual');
+        return;
+    }
+    
+    const container = document.getElementById('multiple-input-container');
+    const newItem = document.createElement('div');
+    newItem.className = 'multiple-input-item mb-4 p-4 border border-gray-200 rounded-lg bg-gray-50';
+    newItem.innerHTML = `
+        <div class="flex justify-between items-center mb-2">
+            <span class="text-sm font-medium text-gray-700">Buku #${multipleInputCounter}</span>
+            <button type="button" onclick="removeMultipleInput(this)" class="text-red-500 hover:text-red-700">
+                <i data-feather="x" class="w-4 h-4"></i>
+            </button>
+        </div>
+        <input type="text" 
+               class="multiple-judul w-full px-4 py-2 input-modern rounded-lg focus:ring-2 focus:ring-blue-500 outline-none mb-3" 
+               placeholder="Judul buku"
+               required>
+        <textarea class="multiple-deskripsi w-full px-4 py-2 input-modern rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-sm" 
+                  rows="2" 
+                  placeholder="Deskripsi (opsional)"></textarea>
+    `;
+    
+    container.appendChild(newItem);
+    updateManualCount();
+    feather.replace();
+}
+
+function removeMultipleInput(button) {
+    if (multipleInputCounter <= 1) {
+        alert('Minimal harus ada 1 input buku');
+        return;
+    }
+    
+    const item = button.closest('.multiple-input-item');
+    if (item) {
+        item.remove();
+        multipleInputCounter--;
+        
+        // Update nomor urut
+        updateMultipleInputNumbers();
+        updateManualCount();
+    }
+}
+
+function updateMultipleInputNumbers() {
+    const items = document.querySelectorAll('.multiple-input-item');
+    items.forEach((item, index) => {
+        const titleSpan = item.querySelector('.text-sm.font-medium.text-gray-700');
+        if (titleSpan) {
+            titleSpan.textContent = `Buku #${index + 1}`;
+        }
+    });
+    multipleInputCounter = items.length;
+}
+
+function updateManualCount() {
+    const items = document.querySelectorAll('.multiple-input-item');
+    const countElement = document.getElementById('manualCount');
+    if (countElement) {
+        countElement.textContent = items.length;
+    }
+}
+
+function getMultipleInputData() {
+    const manualItems = document.querySelectorAll('.multiple-input-item');
+    const data = [];
+    let idCounter = 1;
+    
+    // Ambil data dari input manual
+    manualItems.forEach((item, index) => {
+        const judul = item.querySelector('.multiple-judul').value.trim();
+        const deskripsi = item.querySelector('.multiple-deskripsi').value.trim();
+        
+        if (judul) { // Hanya ambil yang ada judulnya
+            data.push({
+                no: idCounter++,
+                judul: judul,
+                deskripsi: deskripsi,
+                source: 'manual'
+            });
+        }
+    });
+    
+    // Tambahkan data dari Excel jika ada
+    importedExcelData.forEach((item, index) => {
+        data.push({
+            no: idCounter++,
+            judul: item.judul,
+            deskripsi: item.deskripsi || '',
+            source: 'excel'
+        });
+    });
+    
+    return data;
+}
+
+function resetMultipleInput() {
+    const container = document.getElementById('multiple-input-container');
+    container.innerHTML = '';
+    
+    // Reset counter dan tambahkan satu input default
+    multipleInputCounter = 0;
+    addMultipleInput(); // Ini akan membuat #1
+    
+    // Reset data Excel
+    resetExcelImport();
+    
+    feather.replace();
+}
+
+// ==================== FUNGSI IMPORT EXCEL ====================
+function initExcelUpload() {
+    const excelFileInput = document.getElementById('excelFile');
+    
+    excelFileInput.addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (!file) return;
+        
+        // Validasi tipe file
+        const validTypes = [
+            'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            'application/vnd.ms-excel',
+            'text/csv'
+        ];
+        
+        if (!validTypes.includes(file.type) && !file.name.match(/\.(xlsx|xls|csv)$/i)) {
+            alert('Format file tidak didukung. Harap upload file Excel (.xlsx, .xls) atau CSV.');
+            resetExcelImport();
+            return;
+        }
+        
+        // Validasi ukuran file (max 5MB)
+        if (file.size > 5 * 1024 * 1024) {
+            alert('Ukuran file terlalu besar. Maksimal 5MB.');
+            resetExcelImport();
+            return;
+        }
+        
+        // Parse file Excel
+        parseExcelFile(file);
+    });
+    
+    // Drag and drop functionality
+    const dropZone = excelFileInput.parentElement;
+    dropZone.addEventListener('dragover', function(e) {
+        e.preventDefault();
+        dropZone.classList.add('border-blue-400', 'bg-blue-100');
+    });
+    
+    dropZone.addEventListener('dragleave', function(e) {
+        e.preventDefault();
+        dropZone.classList.remove('border-blue-400', 'bg-blue-100');
+    });
+    
+    dropZone.addEventListener('drop', function(e) {
+        e.preventDefault();
+        dropZone.classList.remove('border-blue-400', 'bg-blue-100');
+        
+        if (e.dataTransfer.files.length) {
+            excelFileInput.files = e.dataTransfer.files;
+            const event = new Event('change');
+            excelFileInput.dispatchEvent(event);
+        }
+    });
+}
+
+function parseExcelFile(file) {
+    importedExcelData = []; // Reset data
+    
+    const reader = new FileReader();
+    
+    reader.onload = function(e) {
+        try {
+            const data = e.target.result;
+            let workbook;
+            
+            if (file.name.match(/\.csv$/i)) {
+                // Parse CSV
+                parseCSVData(data);
+            } else {
+                // Parse Excel menggunakan SheetJS
+                workbook = XLSX.read(data, { type: 'binary' });
+                parseExcelData(workbook);
+            }
+            
+            if (importedExcelData.length === 0) {
+                throw new Error('Tidak ada data valid yang ditemukan dalam file.');
+            }
+            
+            // Tampilkan preview
+            showExcelPreview();
+            
+            // Aktifkan tombol import
+            document.getElementById('importExcelBtn').disabled = false;
+            
+        } catch (error) {
+            console.error('Error parsing Excel:', error);
+            alert('Gagal memproses file: ' + error.message);
+            resetExcelImport();
+        }
+    };
+    
+    reader.onerror = function() {
+        alert('Gagal membaca file. Pastikan file tidak rusak.');
+        resetExcelImport();
+    };
+    
+    if (file.name.match(/\.csv$/i)) {
+        reader.readAsText(file);
+    } else {
+        reader.readAsBinaryString(file);
+    }
+}
+
+function parseCSVData(data) {
+    const lines = data.split('\n');
+    
+    // Cari delimiter (koma atau titik koma)
+    let delimiter = ',';
+    if (lines[0].includes(';') && !lines[0].includes(',')) {
+        delimiter = ';';
+    }
+    
+    const headers = lines[0].split(delimiter).map(h => h.trim().toLowerCase()
+        .replace(/[\r\n\"]/g, '')
+        .replace(/^\uFEFF/, '') // Remove BOM
+    );
+    
+    // Cari kolom yang dibutuhkan
+    const judulIndex = headers.findIndex(h => 
+        h.includes('judul') || h.includes('title') || h.includes('nama')
+    );
+    
+    if (judulIndex === -1) {
+        throw new Error('Kolom judul tidak ditemukan. Pastikan file memiliki kolom "judul" atau "judul_buku".');
+    }
+    
+    const deskripsiIndex = headers.findIndex(h => 
+        h.includes('deskripsi') || h.includes('keterangan') || h.includes('desc')
+    );
+    
+    // Parse data (maks 100 baris)
+    for (let i = 1; i < Math.min(lines.length, 101); i++) {
+        if (lines[i].trim()) {
+            const cells = lines[i].split(delimiter).map(cell => 
+                cell.trim().replace(/^"|"$/g, '')
+            );
+            const judul = cells[judulIndex] ? cells[judulIndex].trim() : '';
+            
+            if (judul) {
+                importedExcelData.push({
+                    judul: judul,
+                    deskripsi: deskripsiIndex >= 0 ? (cells[deskripsiIndex] || '').trim() : ''
+                });
+            }
+        }
+    }
+}
+
+function parseExcelData(workbook) {
+    const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
+    const jsonData = XLSX.utils.sheet_to_json(firstSheet, { header: 1 });
+    
+    if (jsonData.length < 2) {
+        throw new Error('File Excel kosong atau hanya memiliki header');
+    }
+    
+    // Ambil header (baris pertama)
+    const headers = jsonData[0].map(h => 
+        h ? h.toString().toLowerCase().trim().replace(/[\r\n\"]/g, '') : ''
+    );
+    
+    // Cari kolom yang dibutuhkan
+    const judulIndex = headers.findIndex(h => 
+        h && (h.includes('judul') || h.includes('title') || h.includes('nama'))
+    );
+    
+    if (judulIndex === -1) {
+        throw new Error('Kolom judul tidak ditemukan. Pastikan file memiliki kolom "judul" atau "judul_buku".');
+    }
+    
+    const deskripsiIndex = headers.findIndex(h => 
+        h && (h.includes('deskripsi') || h.includes('keterangan') || h.includes('desc'))
+    );
+    
+    // Parse data (maks 100 baris)
+    for (let i = 1; i < Math.min(jsonData.length, 101); i++) {
+        const row = jsonData[i];
+        if (row && row[judulIndex]) {
+            const judul = row[judulIndex].toString().trim();
+            
+            if (judul) {
+                importedExcelData.push({
+                    judul: judul,
+                    deskripsi: deskripsiIndex >= 0 && row[deskripsiIndex] ? 
+                              row[deskripsiIndex].toString().trim() : ''
+                });
+            }
+        }
+    }
+}
+
+function showExcelPreview() {
+    const previewBody = document.getElementById('excelPreviewBody');
+    const previewContainer = document.getElementById('excelPreview');
+    const dataCountElement = document.getElementById('excelDataCount');
+    
+    // Update count
+    if (dataCountElement) {
+        dataCountElement.textContent = importedExcelData.length;
+    }
+    
+    // Tampilkan data (maks 10 baris preview)
+    let bodyHTML = '';
+    const previewLimit = Math.min(importedExcelData.length, 10);
+    
+    for (let i = 0; i < previewLimit; i++) {
+        const item = importedExcelData[i];
+        bodyHTML += `
+            <tr class="${i % 2 === 0 ? 'bg-white' : 'bg-gray-50'}">
+                <td class="p-3 text-sm text-gray-700 font-mono">${i + 1}</td>
+                <td class="p-3 text-sm text-gray-800 font-medium">${item.judul.substring(0, 40)}${item.judul.length > 40 ? '...' : ''}</td>
+                <td class="p-3 text-sm text-gray-600">${item.deskripsi ? item.deskripsi.substring(0, 30) + (item.deskripsi.length > 30 ? '...' : '') : '-'}</td>
+            </tr>
+        `;
+    }
+    
+    if (importedExcelData.length > 10) {
+        bodyHTML += `
+            <tr class="bg-blue-50">
+                <td colspan="3" class="p-3 text-center text-sm text-blue-700 font-medium">
+                    + ${importedExcelData.length - 10} data lainnya...
+                </td>
+            </tr>
+        `;
+    }
+    
+    previewBody.innerHTML = bodyHTML;
+    previewContainer.classList.remove('hidden');
+    
+    feather.replace();
+}
+
+function importFromExcel() {
+    if (importedExcelData.length === 0) {
+        alert('Tidak ada data Excel yang diimpor. Silakan upload file terlebih dahulu.');
+        return;
+    }
+    
+    // Tambahkan data ke input manual (opsional)
+    // Atau biarkan hanya di preview, akan diproses bersama saat klasifikasi
+    
+    alert(`Berhasil mengimpor ${importedExcelData.length} data dari Excel. Data akan diproses bersama dengan input manual.`);
+}
+
+function resetExcelImport() {
+    document.getElementById('excelFile').value = '';
+    document.getElementById('excelPreview').classList.add('hidden');
+    document.getElementById('importExcelBtn').disabled = true;
+    importedExcelData = [];
+}
+
+// ==================== FUNGSI KLASIFIKASI MULTIPLE ====================
+async function prosesKlasifikasiMultiple() {
+    startTime = Date.now();
+    
+    const inputData = getMultipleInputData();
+    
+    if (inputData.length === 0) {
+        alert('Silakan masukkan minimal satu judul buku (manual atau dari Excel)');
+        return;
+    }
+    
+    // Validasi data
+    const manualItems = document.querySelectorAll('.multiple-input-item');
+    let hasManualData = false;
+    
+    manualItems.forEach(item => {
+        const judul = item.querySelector('.multiple-judul').value.trim();
+        if (judul) hasManualData = true;
+    });
+    
+    if (!hasManualData && importedExcelData.length === 0) {
+        alert('Silakan masukkan minimal satu judul buku');
+        return;
+    }
+    
+    // Tampilkan loading
+    showLoading('Memproses ' + inputData.length + ' buku...');
+    
+    // Load data training
+    loadAllData();
+    
+    if (dataTraining.length === 0) {
+        hideLoading();
+        alert('Data training kosong. Silakan tambah data training terlebih dahulu.');
+        return;
+    }
+    
+    // Build model sekali saja
+    const model = buildNaiveBayesModel(dataTraining);
+    if (!model) {
+        hideLoading();
+        alert('Gagal membangun model dari data training');
+        return;
+    }
+    
+    multipleResults = [];
+    
+    // Proses setiap buku dengan delay untuk UI yang responsif
+    for (let i = 0; i < inputData.length; i++) {
+        const item = inputData[i];
+        const teksGabungan = item.deskripsi ? `${item.judul} ${item.deskripsi}` : item.judul;
+        
+        const result = classifyWithNaiveBayes(teksGabungan, model);
+        
+        multipleResults.push({
+            no: item.no,
+            judul: item.judul,
+            deskripsi: item.deskripsi || '',
+            kode: result.kode,
+            kategori: result.nama,
+            confidence: result.confidence,
+            waktu: new Date().toLocaleString('id-ID'),
+            source: item.source
+        });
+        
+        // Update progress
+        updateLoadingProgress(Math.round(((i + 1) / inputData.length) * 100));
+        
+        // Beri sedikit delay untuk UI yang responsif (untuk jumlah data banyak)
+        if (inputData.length > 20 && i < inputData.length - 1) {
+            await new Promise(resolve => setTimeout(resolve, 10));
+        }
+    }
+    
+    hideLoading();
+    showMultipleResults();
+}
+
+function showMultipleResults() {
+    // Sembunyikan semua tab content
+    document.querySelectorAll('.tab-content').forEach(content => {
+        content.classList.add('hidden');
+    });
+    
+    // Tampilkan results container
+    const resultsContainer = document.getElementById('multiple-results-container');
+    resultsContainer.classList.remove('hidden');
+    
+    // Hitung waktu processing
+    const processingTime = ((Date.now() - startTime) / 1000).toFixed(2);
+    document.getElementById('processing-time').textContent = processingTime;
+    
+    // Update total count
+    document.getElementById('total-books-count').textContent = multipleResults.length;
+    
+    // Tampilkan data dalam tabel
+    const tbody = document.getElementById('multiple-results-body');
+    let html = '';
+    
+    multipleResults.forEach((result, index) => {
+        const confidenceColor = result.confidence >= 80 ? 'text-green-600' : 
+                              result.confidence >= 60 ? 'text-yellow-600' : 'text-red-600';
+        const confidenceBg = result.confidence >= 80 ? 'bg-green-100' : 
+                           result.confidence >= 60 ? 'bg-yellow-100' : 'bg-red-100';
+        
+        html += `
+            <tr class="hover:bg-gray-50 transition-colors">
+                <td class="p-4 text-sm text-gray-700 font-mono">${result.no}</td>
+                <td class="p-4">
+                    <div class="font-medium text-gray-800">${result.judul}</div>
+                    ${result.source === 'excel' ? 
+                      `<span class="inline-block mt-1 px-2 py-0.5 text-xs bg-blue-100 text-blue-700 rounded">Excel</span>` : 
+                      `<span class="inline-block mt-1 px-2 py-0.5 text-xs bg-gray-100 text-gray-700 rounded">Manual</span>`}
+                </td>
+                <td class="p-4 text-sm text-gray-600">${result.deskripsi || '-'}</td>
+                <td class="p-4">
+                    <div class="font-bold text-blue-700 font-mono text-center">${result.kode}</div>
+                </td>
+                <td class="p-4">
+                    <div class="font-medium text-gray-800">${result.kategori}</div>
+                </td>
+                <td class="p-4">
+                    <div class="flex items-center">
+                        <div class="w-16 mr-3">
+                            <div class="text-sm font-bold ${confidenceColor}">${result.confidence}%</div>
+                        </div>
+                        <div class="flex-1">
+                            <div class="w-full bg-gray-200 rounded-full h-2">
+                                <div class="h-2 rounded-full ${result.confidence >= 80 ? 'bg-green-500' : result.confidence >= 60 ? 'bg-yellow-500' : 'bg-red-500'}" 
+                                     style="width: ${result.confidence}%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </td>
+                <td class="p-4">
+                    <button onclick="viewSingleResult(${index})" class="px-3 py-1 bg-blue-100 text-blue-700 rounded-lg hover:bg-blue-200 transition-all duration-300 text-xs flex items-center">
+                        <i data-feather="eye" class="w-3 h-3 mr-1"></i> Detail
+                    </button>
+                </td>
+            </tr>
+        `;
+    });
+    
+    tbody.innerHTML = html;
+    
+    // Simpan ke riwayat batch
+    saveBatchToHistory();
+    
+    feather.replace();
+}
+
+function closeMultipleResults() {
+    document.getElementById('multiple-results-container').classList.add('hidden');
+    // Kembali ke tab multiple
+    switchTab('multiple');
+}
+
+function viewSingleResult(index) {
+    if (multipleResults[index]) {
+        const result = multipleResults[index];
+        
+        // Set nilai input di tab single
+        document.getElementById('inputJudul').value = result.judul;
+        document.getElementById('inputDeskripsi').value = result.deskripsi;
+        
+        // Switch ke tab single
+        switchTab('single');
+        
+        // Trigger klasifikasi
+        setTimeout(() => {
+            prosesKlasifikasi();
+            
+            // Scroll ke hasil
+            const hasilCard = document.getElementById('hasil-klasifikasi-card');
+            if (hasilCard) {
+                hasilCard.scrollIntoView({ behavior: 'smooth' });
+            }
+        }, 100);
+    }
+}
+
+// ==================== FUNGSI EKSPOR HASIL ====================
+function exportResultsToExcel() {
+    if (multipleResults.length === 0) {
+        alert('Tidak ada data untuk diexport');
+        return;
+    }
+    
+    // Buat worksheet
+    const wsData = [
+        ['No', 'Judul Buku', 'Deskripsi', 'Kode DDC', 'Kategori', 'Confidence (%)', 'Waktu Prediksi', 'Sumber']
+    ];
+    
+    multipleResults.forEach(result => {
+        wsData.push([
+            result.no,
+            result.judul,
+            result.deskripsi || '',
+            result.kode,
+            result.kategori,
+            result.confidence,
+            result.waktu,
+            result.source === 'excel' ? 'Impor Excel' : 'Input Manual'
+        ]);
+    });
+    
+    const ws = XLSX.utils.aoa_to_sheet(wsData);
+    
+    // Set column widths
+    const wscols = [
+        { wch: 5 },  // No
+        { wch: 50 }, // Judul
+        { wch: 40 }, // Deskripsi
+        { wch: 10 }, // Kode
+        { wch: 30 }, // Kategori
+        { wch: 12 }, // Confidence
+        { wch: 20 }, // Waktu
+        { wch: 12 }  // Sumber
+    ];
+    ws['!cols'] = wscols;
+    
+    // Style header
+    if (ws['!ref']) {
+        const range = XLSX.utils.decode_range(ws['!ref']);
+        for (let C = range.s.c; C <= range.e.c; ++C) {
+            const cell = XLSX.utils.encode_cell({r: 0, c: C});
+            if (!ws[cell]) continue;
+            ws[cell].s = {
+                fill: { fgColor: { rgb: "4F81BD" } },
+                font: { bold: true, color: { rgb: "FFFFFF" } },
+                alignment: { horizontal: "center" }
+            };
+        }
+    }
+    
+    // Buat workbook
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'Hasil Klasifikasi');
+    
+    // Export ke file
+    const fileName = `hasil_klasifikasi_ddc_${new Date().toISOString().slice(0,10)}.xlsx`;
+    XLSX.writeFile(wb, fileName);
+}
+
+function exportResultsToPDF() {
+    if (multipleResults.length === 0) {
+        alert('Tidak ada data untuk diexport');
+        return;
+    }
+    
+    // Buat konten PDF
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF('p', 'mm', 'a4');
+    
+    // Judul
+    doc.setFontSize(16);
+    doc.text('Hasil Klasifikasi DDC', 105, 20, { align: 'center' });
+    doc.setFontSize(10);
+    doc.text(`Dicetak pada: ${new Date().toLocaleString('id-ID')}`, 105, 27, { align: 'center' });
+    doc.text(`Total data: ${multipleResults.length} buku | Waktu proses: ${((Date.now() - startTime) / 1000).toFixed(2)} detik`, 105, 32, { align: 'center' });
+    
+    // Buat tabel
+    const startY = 40;
+    const headers = [['No', 'Judul Buku', 'Kode DDC', 'Kategori', 'Confidence']];
+    
+    const rows = multipleResults.map(result => [
+        result.no.toString(),
+        result.judul.substring(0, 30) + (result.judul.length > 30 ? '...' : ''),
+        result.kode,
+        result.kategori,
+        result.confidence + '%'
+    ]);
+    
+    doc.autoTable({
+        head: headers,
+        body: rows,
+        startY: startY,
+        theme: 'grid',
+        headStyles: { 
+            fillColor: [59, 130, 246],
+            textColor: 255,
+            fontStyle: 'bold'
+        },
+        columnStyles: {
+            0: { cellWidth: 10, halign: 'center' },
+            1: { cellWidth: 80 },
+            2: { cellWidth: 20, halign: 'center' },
+            3: { cellWidth: 40 },
+            4: { cellWidth: 25, halign: 'center' }
+        },
+        margin: { left: 10, right: 10 },
+        styles: { fontSize: 8 },
+        headStyles: { fontSize: 9 }
+    });
+    
+    // Footer
+    const pageCount = doc.internal.getNumberOfPages();
+    for (let i = 1; i <= pageCount; i++) {
+        doc.setPage(i);
+        doc.setFontSize(8);
+        doc.text(`Halaman ${i} dari ${pageCount}`, 105, 287, { align: 'center' });
+    }
+    
+    // Simpan PDF
+    doc.save(`hasil_klasifikasi_ddc_${new Date().toISOString().slice(0,10)}.pdf`);
+}
+
+// ==================== FUNGSI LOADING ====================
+function showLoading(message = 'Memproses...') {
+    // Create loading overlay if not exists
+    let loadingOverlay = document.getElementById('loading-overlay');
+    if (!loadingOverlay) {
+        loadingOverlay = document.createElement('div');
+        loadingOverlay.id = 'loading-overlay';
+        loadingOverlay.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50';
+        loadingOverlay.innerHTML = `
+            <div class="bg-white rounded-xl p-8 max-w-md w-full mx-4 shadow-2xl">
+                <div class="flex flex-col items-center">
+                    <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mb-4"></div>
+                    <div id="loading-message" class="text-lg font-medium text-gray-800 mb-2">${message}</div>
+                    <div class="w-full bg-gray-200 rounded-full h-2.5 mb-1">
+                        <div id="loading-progress" class="bg-blue-600 h-2.5 rounded-full transition-all duration-300" style="width: 0%"></div>
+                    </div>
+                    <div id="loading-percentage" class="text-sm text-gray-600">0%</div>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(loadingOverlay);
+    } else {
+        loadingOverlay.classList.remove('hidden');
+        document.getElementById('loading-message').textContent = message;
+        document.getElementById('loading-progress').style.width = '0%';
+        document.getElementById('loading-percentage').textContent = '0%';
+    }
+}
+
+function updateLoadingProgress(percent) {
+    const progressBar = document.getElementById('loading-progress');
+    const percentageText = document.getElementById('loading-percentage');
+    
+    if (progressBar && percentageText) {
+        progressBar.style.width = percent + '%';
+        percentageText.textContent = percent + '%';
+    }
+}
+
+function hideLoading() {
+    const loadingOverlay = document.getElementById('loading-overlay');
+    if (loadingOverlay) {
+        setTimeout(() => {
+            loadingOverlay.classList.add('hidden');
+        }, 500);
+    }
+}
+
+// ==================== FUNGSI BATCH HISTORY ====================
+function saveBatchToHistory() {
+    if (!window.riwayatKlasifikasi) {
+        window.riwayatKlasifikasi = [];
+    }
+    
+    multipleResults.forEach(result => {
+        const newEntry = {
+            id: Date.now() + Math.random(),
+            judul: result.judul,
+            kode: result.kode,
+            kategori: result.kategori,
+            waktu: result.waktu,
+            confidence: result.confidence,
+            batch: true,
+            source: result.source
+        };
+        
+        window.riwayatKlasifikasi.unshift(newEntry);
+    });
+    
+    // Simpan ke localStorage
+    localStorage.setItem("riwayatKlasifikasi", JSON.stringify(window.riwayatKlasifikasi));
+    
+    if (window.updateStats) {
+        window.updateStats();
+    }
+}
+
+// ==================== FUNGSI YANG SUDAH ADA (DIMODIFIKASI) ====================
 // Fungsi untuk memuat data dari localStorage
 function loadAllData() {
     console.log('Loading data from localStorage...');
@@ -548,7 +1525,7 @@ function classifyWithNaiveBayes(text, model) {
     };
 }
 
-// Fungsi utama klasifikasi
+// Fungsi utama klasifikasi (untuk single)
 function prosesKlasifikasi() {
     const judulInput = document.getElementById("inputJudul");
     const judul = judulInput.value.trim();
@@ -756,7 +1733,7 @@ function showNaiveBayesDetails(details, winnerCode, stemTokens, model) {
     }
 }
 
-// Simpan ke riwayat
+// Simpan ke riwayat (single)
 function saveToHistory(judul, kode, kategori, confidence) {
     const newEntry = {
         id: Date.now(),
@@ -820,10 +1797,35 @@ function toggleDetail() {
     }
 }
 
-// Inisialisasi saat halaman dimuat
+// ==================== INISIALISASI ====================
 document.addEventListener('DOMContentLoaded', function() {
     // Load data dari localStorage
     loadAllData();
+    
+    // Inisialisasi Excel upload
+    initExcelUpload();
+    
+    // Load SheetJS library jika belum ada
+    if (typeof XLSX === 'undefined') {
+        const script = document.createElement('script');
+        script.src = 'https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js';
+        script.onload = function() {
+            console.log('SheetJS library loaded');
+        };
+        document.head.appendChild(script);
+    }
+    
+    // Load jsPDF library jika belum ada
+    if (typeof window.jspdf === 'undefined') {
+        const script = document.createElement('script');
+        script.src = 'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js';
+        script.onload = function() {
+            const script2 = document.createElement('script');
+            script2.src = 'https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js';
+            document.head.appendChild(script2);
+        };
+        document.head.appendChild(script);
+    }
     
     // Update feather icons
     if (typeof feather !== "undefined") {
@@ -831,9 +1833,20 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 
-// Ekspos fungsi ke global
+// ==================== EKSPOS FUNGSI KE GLOBAL ====================
 window.prosesKlasifikasi = prosesKlasifikasi;
+window.prosesKlasifikasiMultiple = prosesKlasifikasiMultiple;
 window.resetInput = resetInput;
 window.toggleDetail = toggleDetail;
 window.loadAllData = loadAllData;
+window.switchTab = switchTab;
+window.addMultipleInput = addMultipleInput;
+window.removeMultipleInput = removeMultipleInput;
+window.resetMultipleInput = resetMultipleInput;
+window.resetExcelImport = resetExcelImport;
+window.importFromExcel = importFromExcel;
+window.closeMultipleResults = closeMultipleResults;
+window.viewSingleResult = viewSingleResult;
+window.exportResultsToExcel = exportResultsToExcel;
+window.exportResultsToPDF = exportResultsToPDF;
 </script>
