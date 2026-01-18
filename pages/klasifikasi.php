@@ -238,7 +238,12 @@
         </div>
       </div>
       
-      <div class="flex justify-center">
+      <!-- AREA UNTUK DETAIL PERHITUNGAN MULTIPLE (AKAN DITAMPILKAN DI BAWAH TABEL) -->
+      <div id="multiple-details-area" class="space-y-6">
+        <!-- Detail akan ditambahkan di sini secara dinamis -->
+      </div>
+      
+      <div class="flex justify-center mt-6">
         <button onclick="closeMultipleResults()" class="px-6 py-3 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-all duration-300 flex items-center">
           <i data-feather="arrow-left" class="w-4 h-4 mr-2"></i> Kembali ke Input
         </button>
@@ -280,7 +285,7 @@
     </div>
   </div>
 
-  <!-- PREPROCESSING TEKS (POSISI TENGAH) -->
+  <!-- PREPROCESSING TEKS (POSISI TENGAH) - UNTUK SINGLE -->
   <div id="preprocessing-card" class="hidden bg-white rounded-xl shadow-sm border border-gray-200 p-8 card-hover">
     <h2 class="text-xl font-bold text-gray-800 mb-6 flex items-center">
       <i data-feather="filter" class="mr-2 w-5 h-5 text-blue-600"></i> Proses Preprocessing Teks
@@ -306,7 +311,7 @@
     </div>
   </div>
 
-  <!-- DETAIL PERHITUNGAN (POSISI BAWAH) -->
+  <!-- DETAIL PERHITUNGAN (POSISI BAWAH) - UNTUK SINGLE -->
   <div id="detail-container" class="hidden bg-gray-50 rounded-xl border border-gray-200 p-8 card-hover">
     <h2 class="text-xl font-bold text-gray-800 mb-6 flex items-center">
       <i data-feather="calculator" class="mr-2 w-5 h-5 text-blue-600"></i> Detail Perhitungan Naive Bayes
@@ -409,6 +414,7 @@ let kategoriDDC = [];
 let multipleResults = []; // Untuk menyimpan hasil multiple
 let importedExcelData = []; // Untuk menyimpan data Excel yang diimpor
 let startTime = 0; // Untuk menghitung waktu processing
+let expandedDetailIndex = -1; // Indeks detail yang sedang diperluas (-1 = tidak ada)
 
 // ==================== FUNGSI TAB SWITCHING ====================
 function switchTab(tabName) {
@@ -799,9 +805,6 @@ function importFromExcel() {
         return;
     }
     
-    // Tambahkan data ke input manual (opsional)
-    // Atau biarkan hanya di preview, akan diproses bersama saat klasifikasi
-    
     alert(`Berhasil mengimpor ${importedExcelData.length} data dari Excel. Data akan diproses bersama dengan input manual.`);
 }
 
@@ -874,7 +877,11 @@ async function prosesKlasifikasiMultiple() {
             kategori: result.nama,
             confidence: result.confidence,
             waktu: new Date().toLocaleString('id-ID'),
-            source: item.source
+            source: item.source,
+            // Simpan data detail untuk modal
+            teksGabungan: teksGabungan,
+            model: model,
+            classificationResult: result
         });
         
         // Update progress
@@ -900,6 +907,9 @@ function showMultipleResults() {
     const resultsContainer = document.getElementById('multiple-results-container');
     resultsContainer.classList.remove('hidden');
     
+    // Kosongkan area detail sebelumnya
+    document.getElementById('multiple-details-area').innerHTML = '';
+    
     // Hitung waktu processing
     const processingTime = ((Date.now() - startTime) / 1000).toFixed(2);
     document.getElementById('processing-time').textContent = processingTime;
@@ -914,17 +924,12 @@ function showMultipleResults() {
     multipleResults.forEach((result, index) => {
         const confidenceColor = result.confidence >= 80 ? 'text-green-600' : 
                               result.confidence >= 60 ? 'text-yellow-600' : 'text-red-600';
-        const confidenceBg = result.confidence >= 80 ? 'bg-green-100' : 
-                           result.confidence >= 60 ? 'bg-yellow-100' : 'bg-red-100';
         
         html += `
-            <tr class="hover:bg-gray-50 transition-colors">
+            <tr class="hover:bg-gray-50 transition-colors" id="result-row-${index}">
                 <td class="p-4 text-sm text-gray-700 font-mono">${result.no}</td>
                 <td class="p-4">
                     <div class="font-medium text-gray-800">${result.judul}</div>
-                    ${result.source === 'excel' ? 
-                      `<span class="inline-block mt-1 px-2 py-0.5 text-xs bg-blue-100 text-blue-700 rounded">Excel</span>` : 
-                      `<span class="inline-block mt-1 px-2 py-0.5 text-xs bg-gray-100 text-gray-700 rounded">Manual</span>`}
                 </td>
                 <td class="p-4 text-sm text-gray-600">${result.deskripsi || '-'}</td>
                 <td class="p-4">
@@ -947,8 +952,8 @@ function showMultipleResults() {
                     </div>
                 </td>
                 <td class="p-4">
-                    <button onclick="viewSingleResult(${index})" class="px-3 py-1 bg-blue-100 text-blue-700 rounded-lg hover:bg-blue-200 transition-all duration-300 text-xs flex items-center">
-                        <i data-feather="eye" class="w-3 h-3 mr-1"></i> Detail
+                    <button onclick="toggleDetailMultiple(${index})" class="px-3 py-1 bg-blue-100 text-blue-700 rounded-lg hover:bg-blue-200 transition-all duration-300 text-xs flex items-center">
+                        <i data-feather="calculator" class="w-3 h-3 mr-1"></i> Detail
                     </button>
                 </td>
             </tr>
@@ -963,34 +968,310 @@ function showMultipleResults() {
     feather.replace();
 }
 
+function toggleDetailMultiple(index) {
+    // Jika detail sudah diperluas, tutup
+    if (expandedDetailIndex === index) {
+        closeDetailMultiple();
+        return;
+    }
+    
+    // Tutup detail sebelumnya jika ada
+    if (expandedDetailIndex !== -1) {
+        closeDetailMultiple();
+    }
+    
+    // Tampilkan detail baru
+    showDetailMultiple(index);
+}
+
+function showDetailMultiple(index) {
+    if (!multipleResults[index]) return;
+    
+    expandedDetailIndex = index;
+    const result = multipleResults[index];
+    
+    // Update tombol menjadi "Tutup Detail"
+    const button = document.querySelector(`#result-row-${index} button`);
+    if (button) {
+        button.innerHTML = '<i data-feather="x" class="w-3 h-3 mr-1"></i> Tutup';
+        button.classList.remove('bg-blue-100', 'text-blue-700');
+        button.classList.add('bg-red-100', 'text-red-700');
+    }
+    
+    // Proses teks untuk preprocessing
+    const debugResult = preprocessTextForDebug(result.teksGabungan);
+    
+    // Hitung detail Naive Bayes jika belum ada
+    if (!result.classificationResult.details) {
+        loadAllData();
+        const model = buildNaiveBayesModel(dataTraining);
+        if (model) {
+            result.classificationResult = classifyWithNaiveBayes(result.teksGabungan, model);
+        }
+    }
+    
+    // Buat elemen detail
+    const detailElement = document.createElement('div');
+    detailElement.id = `detail-multiple-${index}`;
+    detailElement.className = 'bg-gray-50 rounded-xl border border-gray-200 p-6 mt-4 animate-fadeIn';
+    detailElement.innerHTML = `
+        <div class="flex justify-between items-center mb-6">
+            <h3 class="text-lg font-bold text-gray-800 flex items-center">
+                <i data-feather="calculator" class="mr-2 w-5 h-5 text-blue-600"></i>
+                Detail Perhitungan untuk: <span class="text-blue-700 ml-2">${result.judul}</span>
+            </h3>
+            <button onclick="closeDetailMultiple()" class="p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-200 rounded-lg transition-all duration-300">
+                <i data-feather="x" class="w-4 h-4"></i>
+            </button>
+        </div>
+        
+        <!-- Hasil Prediksi -->
+        <div class="bg-white rounded-xl border border-gray-200 p-6 mb-6">
+            <h4 class="text-lg font-bold text-gray-800 mb-4 flex items-center">
+                <i data-feather="check-square" class="w-5 h-5 mr-2 text-blue-600"></i>
+                Hasil Prediksi
+            </h4>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div class="text-center p-4 bg-blue-50 rounded-xl border border-blue-100">
+                    <span class="text-xs font-bold text-blue-600 uppercase tracking-widest">Kode DDC</span>
+                    <div id="multiple-detail-code-${index}" class="text-2xl md:text-3xl font-extrabold text-blue-900 mt-2 font-mono">${result.kode}</div>
+                </div>
+                <div class="text-center p-4 bg-green-50 rounded-xl border border-green-100">
+                    <span class="text-xs font-bold text-green-600 uppercase tracking-widest">Kategori</span>
+                    <div id="multiple-detail-category-${index}" class="text-lg md:text-xl font-bold text-gray-800 mt-2">${result.kategori}</div>
+                    <div id="multiple-detail-category-desc-${index}" class="text-sm text-gray-600 mt-1 italic">Kategori terdeteksi</div>
+                </div>
+                <div class="text-center p-4 bg-purple-50 rounded-xl border border-purple-100">
+                    <span class="text-xs font-bold text-purple-600 uppercase tracking-widest">Confidence</span>
+                    <div id="multiple-detail-prob-${index}" class="text-2xl md:text-3xl font-extrabold text-purple-600 mt-2">${result.confidence}%</div>
+                    <div class="w-full bg-gray-200 rounded-full h-2.5 mt-3">
+                        <div id="multiple-detail-prob-bar-${index}" class="bg-gradient-to-r from-purple-500 to-pink-500 h-2.5 rounded-full" style="width: ${result.confidence}%"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Preprocessing -->
+        <div class="bg-white rounded-xl border border-gray-200 p-6 mb-6">
+            <h4 class="text-lg font-bold text-gray-800 mb-4 flex items-center">
+                <i data-feather="filter" class="w-5 h-5 mr-2 text-blue-600"></i>
+                Proses Preprocessing Teks
+            </h4>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <h5 class="font-bold text-sm uppercase text-gray-500 mb-3">1. Case Folding & Cleaning</h5>
+                    <div id="multiple-detail-cleaning-${index}" class="p-4 bg-gray-50 rounded border border-gray-200 min-h-[60px] text-sm text-gray-600 overflow-x-auto">${debugResult.clean || "(tidak ada teks)"}</div>
+                </div>
+                <div>
+                    <h5 class="font-bold text-sm uppercase text-gray-500 mb-3">2. Tokenizing</h5>
+                    <div id="multiple-detail-tokenizing-${index}" class="flex flex-wrap gap-2 p-4 bg-gray-50 rounded border border-gray-200 min-h-[60px] overflow-y-auto max-h-40">
+                        ${debugResult.tokens.map(t => `<span class="bg-gray-100 text-gray-700 px-2 py-1 rounded border border-gray-200 text-xs font-mono mr-1 mb-1 inline-block">${t}</span>`).join('') || '<span class="text-gray-400 italic">Tidak ada token</span>'}
+                    </div>
+                </div>
+                <div>
+                    <h5 class="font-bold text-sm uppercase text-gray-500 mb-3">3. Stopword Removal</h5>
+                    <div id="multiple-detail-stopword-${index}" class="flex flex-wrap gap-2 p-4 bg-gray-50 rounded border border-gray-200 min-h-[60px] overflow-y-auto max-h-40">
+                        ${debugResult.filtered.map(t => `<span class="bg-blue-50 text-blue-700 px-2 py-1 rounded border border-blue-100 text-xs font-semibold mr-1 mb-1 inline-block">${t}</span>`).join('') || '<span class="text-gray-400 italic">Semua token dihapus sebagai stopword</span>'}
+                    </div>
+                </div>
+                <div>
+                    <h5 class="font-bold text-sm uppercase text-gray-500 mb-3">4. Stemming (Kata Dasar)</h5>
+                    <div id="multiple-detail-stemming-${index}" class="flex flex-wrap gap-2 p-4 bg-gray-50 rounded border border-gray-200 min-h-[60px] overflow-y-auto max-h-40">
+                        ${debugResult.stem.map(t => `<span class="bg-indigo-50 text-indigo-700 px-2 py-1 rounded border border-indigo-100 text-xs font-bold mr-1 mb-1 inline-block">${t}</span>`).join('') || '<span class="text-gray-400 italic">Tidak ada kata dasar</span>'}
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Detail Perhitungan Naive Bayes -->
+        <div class="bg-gray-50 rounded-xl border border-gray-200 p-6">
+            <h4 class="text-lg font-bold text-gray-800 mb-4 flex items-center">
+                <i data-feather="calculator" class="w-5 h-5 mr-2 text-blue-600"></i>
+                Detail Perhitungan Naive Bayes
+            </h4>
+            
+            <!-- Rumus -->
+            <div class="mb-6 p-4 bg-white rounded-lg border border-gray-300">
+                <h5 class="font-bold text-blue-800 mb-2">Rumus Naive Bayes</h5>
+                <div class="text-center">
+                    <div class="text-lg font-bold text-gray-800 mb-1">
+                        P(Kelas|Data) = P(Kelas) × Π P(Kata|Kelas)
+                    </div>
+                    <div class="text-sm text-gray-600">
+                        Menggunakan logaritma: log(P(Kelas)) + Σ log(P(Kata|Kelas))
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Kata Kunci -->
+            <div class="mb-6">
+                <h5 class="font-bold text-sm uppercase text-gray-500 mb-3">Kata Kunci Hasil Preprocessing</h5>
+                <div id="multiple-detail-stem-badges-${index}" class="flex flex-wrap gap-2 p-4 bg-white rounded border border-gray-200 overflow-y-auto max-h-32">
+                    ${debugResult.stem && debugResult.stem.length > 0 ? debugResult.stem.map(t => `<span class="bg-indigo-50 text-indigo-700 px-2 py-1 rounded border border-indigo-100 text-xs font-bold mr-1 mb-1 inline-block">${t}</span>`).join('') : '<span class="text-gray-400 italic">Tidak ada kata kunci yang valid</span>'}
+                </div>
+            </div>
+            
+            ${result.classificationResult.details ? generateNaiveBayesDetailsHTML(result.classificationResult.details, result.kode, debugResult.stem, result.model, index) : '<div class="text-gray-400 italic text-center p-4">Tidak ada data perhitungan</div>'}
+        </div>
+    `;
+    
+    // Tempatkan detail di bawah tabel (sebelum tombol kembali)
+    const detailsArea = document.getElementById('multiple-details-area');
+    detailsArea.appendChild(detailElement);
+    
+    // Scroll ke detail
+    detailElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    
+    feather.replace();
+}
+
+function generateNaiveBayesDetailsHTML(details, winnerCode, stemTokens, model, index) {
+    // Ambil 3 kategori teratas
+    const categories = Object.keys(details.categoryScores || {})
+        .sort((a, b) => (details.categoryScores[b]?.logScore || 0) - (details.categoryScores[a]?.logScore || 0))
+        .slice(0, 3);
+    
+    if (categories.length === 0) return '';
+    
+    let html = '';
+    
+    // Prior Probability
+    html += `
+        <div class="mb-6">
+            <h5 class="font-bold text-sm uppercase text-gray-500 mb-3">Prior Probability P(Kelas)</h5>
+            <div id="multiple-detail-prior-${index}" class="bg-white p-4 rounded border border-gray-200 space-y-2 overflow-x-auto">
+                <div class="text-xs text-gray-600 italic mb-2">
+                    P(Kelas) = Jumlah Data di Kelas / Total Data Training
+                </div>
+    `;
+    
+    categories.forEach(cat => {
+        const prior = details.priorProbabilities[cat] || 0;
+        const catInfo = getCategoryByCode(cat);
+        const docCount = model.categoryDocs[cat] || 0;
+        const totalDocs = model.totalDocs;
+        const isWinner = cat === winnerCode;
+        
+        html += `
+            <div class="flex justify-between items-center text-xs text-gray-700 ${isWinner ? 'bg-green-50 font-bold p-2 rounded' : 'p-1'}">
+                <div>
+                    <div class="font-medium">${catInfo.nama}</div>
+                    <div class="text-gray-500 text-xs">${cat} (${docCount}/${totalDocs} data)</div>
+                </div>
+                <span class="font-mono font-bold">${prior.toFixed(4)}</span>
+            </div>
+        `;
+    });
+    
+    html += `</div></div>`;
+    
+    // Likelihood Table
+    const wordsToShow = stemTokens ? stemTokens.slice(0, 6) : [];
+    
+    if (wordsToShow.length > 0) {
+        html += `
+            <div class="mb-6">
+                <h5 class="font-bold text-sm uppercase text-gray-500 mb-3">Likelihood P(Kata|Kelas)</h5>
+                <div class="text-xs text-gray-600 italic mb-2">
+                    Probabilitas setiap kata dalam masing-masing kelas (top 3 kategori)
+                </div>
+                <div class="bg-white rounded-lg border border-gray-200 overflow-hidden">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-sm text-left min-w-[600px]">
+                            <thead class="bg-gray-100 text-gray-600 uppercase font-bold text-xs">
+                                <tr>
+                                    <th class="p-3 border-b border-gray-300">Kata Dasar</th>
+        `;
+        
+        categories.forEach((cat, idx) => {
+            const catInfo = getCategoryByCode(cat);
+            html += `<th class="p-3 border-b border-gray-300 text-center">${idx === 0 ? `<div class="font-bold">${cat}</div><div class="text-xs text-gray-600">${catInfo.nama}</div>` : `<div>${cat}</div><div class="text-xs text-gray-600">${catInfo.nama}</div>`}</th>`;
+        });
+        
+        html += `</tr></thead><tbody id="multiple-detail-table-body-${index}" class="divide-y divide-gray-200">`;
+        
+        wordsToShow.forEach(word => {
+            html += `<tr class="border-b border-gray-200 hover:bg-gray-50">`;
+            html += `<td class="p-3 font-medium text-sm text-gray-700">${word}</td>`;
+            
+            categories.forEach((cat, idx) => {
+                const likelihood = details.likelihoods?.[cat]?.[word] || 0.0001;
+                const isWinner = cat === winnerCode;
+                const cellClass = `p-3 text-center text-xs ${isWinner ? 'text-green-700 font-bold bg-green-50' : 'text-gray-600'}`;
+                
+                html += `<td class="${cellClass}">${likelihood.toFixed(4)}</td>`;
+            });
+            
+            html += `</tr>`;
+        });
+        
+        html += `</tbody></table></div></div></div>`;
+    }
+    
+    // Final Scores
+    html += `
+        <div>
+            <h5 class="font-bold text-sm uppercase text-gray-500 mb-3">Skor Akhir (Log Scale)</h5>
+            <div id="multiple-detail-final-scores-${index}" class="bg-white p-4 rounded-lg border border-gray-200">
+                <div class="text-xs text-gray-600 italic mb-2">
+                    Skor tertinggi menentukan kategori pemenang
+                </div>
+    `;
+    
+    categories.forEach(cat => {
+        const score = details.categoryScores?.[cat]?.logScore || 0;
+        const catInfo = getCategoryByCode(cat);
+        const isWinner = cat === winnerCode;
+        
+        html += `
+            <div class="flex justify-between items-center text-xs p-3 rounded-lg ${isWinner ? 'bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200 font-bold' : 'bg-gray-100'} mb-2">
+                <div>
+                    <div class="font-medium">${catInfo.nama}</div>
+                    <div class="text-gray-500 text-xs">${cat}</div>
+                </div>
+                <div class="text-right">
+                    <div class="font-mono font-bold text-lg ${isWinner ? 'text-green-700' : 'text-gray-700'}">${score.toFixed(4)}</div>
+                    ${isWinner ? '<div class="text-xs text-green-600 font-bold">PEMENANG</div>' : ''}
+                </div>
+            </div>
+        `;
+    });
+    
+    html += `</div></div>`;
+    
+    return html;
+}
+
+function closeDetailMultiple() {
+    if (expandedDetailIndex === -1) return;
+    
+    // Update tombol kembali menjadi "Detail"
+    const button = document.querySelector(`#result-row-${expandedDetailIndex} button`);
+    if (button) {
+        button.innerHTML = '<i data-feather="calculator" class="w-3 h-3 mr-1"></i> Detail';
+        button.classList.remove('bg-red-100', 'text-red-700');
+        button.classList.add('bg-blue-100', 'text-blue-700');
+    }
+    
+    // Hapus elemen detail
+    const detailElement = document.getElementById(`detail-multiple-${expandedDetailIndex}`);
+    if (detailElement) {
+        detailElement.remove();
+    }
+    
+    expandedDetailIndex = -1;
+    feather.replace();
+}
+
 function closeMultipleResults() {
+    // Tutup detail jika ada yang terbuka
+    if (expandedDetailIndex !== -1) {
+        closeDetailMultiple();
+    }
+    
     document.getElementById('multiple-results-container').classList.add('hidden');
     // Kembali ke tab multiple
     switchTab('multiple');
-}
-
-function viewSingleResult(index) {
-    if (multipleResults[index]) {
-        const result = multipleResults[index];
-        
-        // Set nilai input di tab single
-        document.getElementById('inputJudul').value = result.judul;
-        document.getElementById('inputDeskripsi').value = result.deskripsi;
-        
-        // Switch ke tab single
-        switchTab('single');
-        
-        // Trigger klasifikasi
-        setTimeout(() => {
-            prosesKlasifikasi();
-            
-            // Scroll ke hasil
-            const hasilCard = document.getElementById('hasil-klasifikasi-card');
-            if (hasilCard) {
-                hasilCard.scrollIntoView({ behavior: 'smooth' });
-            }
-        }, 100);
-    }
 }
 
 // ==================== FUNGSI EKSPOR HASIL ====================
@@ -1846,7 +2127,116 @@ window.resetMultipleInput = resetMultipleInput;
 window.resetExcelImport = resetExcelImport;
 window.importFromExcel = importFromExcel;
 window.closeMultipleResults = closeMultipleResults;
-window.viewSingleResult = viewSingleResult;
+window.toggleDetailMultiple = toggleDetailMultiple;
+window.closeDetailMultiple = closeDetailMultiple;
 window.exportResultsToExcel = exportResultsToExcel;
 window.exportResultsToPDF = exportResultsToPDF;
 </script>
+
+<style>
+/* Animasi untuk detail yang muncul */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.animate-fadeIn {
+    animation: fadeIn 0.3s ease-out;
+}
+
+/* Styling untuk detail multiple */
+#multiple-details-area > div {
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+/* Hover effects untuk tombol */
+button:hover {
+    transform: translateY(-1px);
+    transition: all 0.2s ease;
+}
+
+/* Custom scrollbar */
+#multiple-details-area ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+
+#multiple-details-area ::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 3px;
+}
+
+#multiple-details-area ::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 3px;
+}
+
+#multiple-details-area ::-webkit-scrollbar-thumb:hover {
+    background: #a1a1a1;
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+    #multiple-details-area .grid-cols-2 {
+        grid-template-columns: 1fr;
+    }
+    
+    #multiple-details-area .grid-cols-3 {
+        grid-template-columns: 1fr;
+    }
+    
+    #multiple-details-area table {
+        font-size: 0.75rem;
+    }
+}
+
+/* Loading animation */
+@keyframes pulse {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.5;
+    }
+}
+
+.animate-pulse {
+    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* Smooth transitions */
+.transition-all {
+    transition-property: all;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-duration: 300ms;
+}
+
+/* Card hover effect */
+.card-hover:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+/* Badge styling */
+.bg-indigo-50 {
+    background-color: #eef2ff;
+}
+
+.bg-indigo-100 {
+    background-color: #e0e7ff;
+}
+
+.text-indigo-700 {
+    color: #4338ca;
+}
+
+.border-indigo-100 {
+    border-color: #e0e7ff;
+}
+</style>
