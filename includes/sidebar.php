@@ -7,6 +7,7 @@
     </div>
 
     <nav class="flex-1 px-4 py-6 space-y-1 overflow-y-auto">
+        
         <a href="index.php?page=beranda" class="nav-item <?php echo (isset($_GET['page']) && $_GET['page'] == 'beranda') || !isset($_GET['page']) ? 'bg-blue-700 text-white shadow-lg border border-blue-600' : 'text-blue-100 hover:bg-blue-800 hover:text-white'; ?> flex items-center px-4 py-3 rounded-lg transition-all duration-200 cursor-pointer">
             <i data-feather="home" class="mr-3 w-5 h-5"></i> Beranda
         </a>
@@ -27,8 +28,7 @@
             <i data-feather="activity" class="mr-3 w-5 h-5"></i> Pengujian (Testing)
         </a>
 
-        <!-- Menu Hasil Terverifikasi dengan tema Emerald/Hijau -->
-        <a href="index.php?page=hasil-terverifikasi" class="nav-item <?php echo isset($_GET['page']) && $_GET['page'] == 'hasil-terverifikasi' ? 'bg-emerald-700 text-white shadow-lg border border-emerald-600' : 'text-emerald-100 hover:bg-emerald-800 hover:text-white'; ?> flex items-center px-4 py-2.5 rounded-lg transition-all duration-200 cursor-pointer">
+        <a href="index.php?page=hasil-terverifikasi" class="nav-item <?php echo isset($_GET['page']) && $_GET['page'] == 'hasil-terverifikasi' ? 'bg-blue-700 text-white shadow-lg border border-blue-600' : 'text-blue-100 hover:bg-blue-800 hover:text-white'; ?> flex items-center px-4 py-2.5 rounded-lg transition-all duration-200 cursor-pointer">
             <i data-feather="check-circle" class="mr-3 w-5 h-5"></i> Hasil Terverifikasi
         </a>
 
