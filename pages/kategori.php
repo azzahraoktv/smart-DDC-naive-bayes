@@ -1,102 +1,122 @@
-<div id="page-kategori" class="max-w-7xl mx-auto">
+<div id="page-kategori" class="w-full px-6">
     
     <div class="mb-8">
         <h1 class="text-2xl font-bold text-gray-800 mb-2">Manajemen Kategori DDC</h1>
         <p class="text-gray-600">Kelola database Dewey Decimal Classification (Terhubung Database)</p>
     </div>
 
-    <div class="mb-8 grid grid-cols-1 md:grid-cols-3 gap-6">
+    <div class="mb-8 grid grid-cols-1 md:grid-cols-3 gap-6 w-full">
         <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200 card-hover">
             <div class="flex items-center">
                 <div class="p-3 rounded-lg bg-blue-100 text-blue-600 mr-4">
-                    <i data-feather="layers" class="w-6 h-6"></i>
+                    <i data-feather="layers" class="w-8 h-8"></i>
                 </div>
                 <div>
-                    <p class="text-sm text-gray-500">Total Kategori</p>
-                    <p class="text-2xl font-bold text-gray-800" id="total-kategori-display">0</p>
+                    <p class="text-sm text-gray-500 font-medium">Total Kategori</p>
+                    <p class="text-3xl font-bold text-gray-800" id="total-kategori-display">0</p>
                 </div>
             </div>
         </div>
         <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200 card-hover">
             <div class="flex items-center">
                 <div class="p-3 rounded-lg bg-green-100 text-green-600 mr-4">
-                    <i data-feather="check-circle" class="w-6 h-6"></i>
+                    <i data-feather="check-circle" class="w-8 h-8"></i>
                 </div>
                 <div>
-                    <p class="text-sm text-gray-500">Kategori Terpakai</p>
-                    <p class="text-2xl font-bold text-gray-800" id="active-categories">0</p>
+                    <p class="text-sm text-gray-500 font-medium">Kategori Terpakai</p>
+                    <p class="text-3xl font-bold text-gray-800" id="active-categories">0</p>
                 </div>
             </div>
         </div>
         <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200 card-hover">
             <div class="flex items-center">
                 <div class="p-3 rounded-lg bg-purple-100 text-purple-600 mr-4">
-                    <i data-feather="database" class="w-6 h-6"></i>
+                    <i data-feather="database" class="w-8 h-8"></i>
                 </div>
                 <div>
-                    <p class="text-sm text-gray-500">Data Training</p>
-                    <p class="text-2xl font-bold text-gray-800" id="total-data-training">0</p>
+                    <p class="text-sm text-gray-500 font-medium">Data Training</p>
+                    <p class="text-3xl font-bold text-gray-800" id="total-data-training">0</p>
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="mb-6 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+    <div class="mb-6 flex flex-col xl:flex-row justify-between items-start xl:items-center gap-4">
         <div class="flex flex-wrap gap-3">
-            <button onclick="bukaModalKategori()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm flex items-center shadow-sm transition card-hover">
+            <button onclick="bukaModalKategori()" class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-lg text-sm font-medium shadow-sm transition card-hover flex items-center">
                 <i data-feather="plus" class="mr-2 w-4 h-4"></i> Tambah Kategori
             </button>
-            <button onclick="syncKategoriStandar()" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm flex items-center shadow-sm transition card-hover">
+            <button onclick="syncKategoriStandar()" class="bg-green-600 hover:bg-green-700 text-white px-5 py-2.5 rounded-lg text-sm font-medium shadow-sm transition card-hover flex items-center">
                 <i data-feather="refresh-cw" class="mr-2 w-4 h-4"></i> Sync Standar (32)
             </button>
-            <button onclick="exportExcel()" class="bg-yellow-600 hover:bg-yellow-700 text-white px-4 py-2 rounded-lg text-sm flex items-center shadow-sm transition card-hover">
+            <button onclick="exportExcel()" class="bg-yellow-500 hover:bg-yellow-600 text-white px-5 py-2.5 rounded-lg text-sm font-medium shadow-sm transition card-hover flex items-center">
                 <i data-feather="download" class="mr-2 w-4 h-4"></i> Export Excel
             </button>
-            <button onclick="importExcel()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg text-sm flex items-center shadow-sm transition card-hover">
+            <button onclick="importExcel()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-2.5 rounded-lg text-sm font-medium shadow-sm transition card-hover flex items-center">
                 <i data-feather="upload" class="mr-2 w-4 h-4"></i> Import Excel
             </button>
         </div>
 
-        <div class="relative w-full md:w-64">
-            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <i data-feather="search" class="h-4 w-4 text-gray-400"></i>
+        <div class="flex flex-col sm:flex-row gap-3 w-full xl:w-auto">
+            
+            <div class="relative w-full sm:w-48">
+                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <i data-feather="filter" class="h-4 w-4 text-gray-500"></i>
+                </div>
+                <select id="sortSelect" onchange="handleSort()" class="block w-full pl-10 pr-8 py-3 border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-blue-200 appearance-none text-sm text-gray-700 cursor-pointer transition">
+                    <option value="kode_asc">Kode (0-9)</option>
+                    <option value="kode_desc">Kode (9-0)</option>
+                    <option value="nama_asc">Nama (A-Z)</option>
+                    <option value="nama_desc">Nama (Z-A)</option>
+                </select>
+                <div class="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
+                    <i data-feather="chevron-down" class="h-4 w-4 text-gray-500"></i>
+                </div>
             </div>
-            <input type="text" id="searchInput" onkeyup="handleSearch()" 
-                   class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 sm:text-sm transition" 
-                   placeholder="Cari kode atau nama...">
+
+            <div class="relative w-full sm:w-80">
+                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <i data-feather="search" class="h-5 w-5 text-gray-400"></i>
+                </div>
+                <input type="text" id="searchInput" onkeyup="filterKategori()" 
+                       class="block w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition" 
+                       placeholder="Cari kode atau nama...">
+            </div>
         </div>
     </div>
 
-    <div class="mb-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+    <div class="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
         <div class="flex items-start">
             <i data-feather="info" class="w-5 h-5 text-blue-600 mr-3 mt-0.5"></i>
             <div>
-                <p class="text-sm font-medium text-blue-800 mb-1">Data Terintegrasi Database</p>
-                <div class="text-xs text-blue-700">
+                <p class="text-sm font-bold text-blue-800 mb-1">Data Terintegrasi Database</p>
+                <div class="text-sm text-blue-700">
                     <p>Semua data kategori diambil dan disimpan langsung ke database server (MySQL).</p>
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden card-hover">
+    <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden card-hover w-full">
         <div class="overflow-x-auto">
             <table class="w-full text-left">
-                <thead class="bg-gradient-to-r from-gray-50 to-gray-100 border-b">
+                <thead class="bg-gray-50 border-b border-gray-200">
                     <tr>
-                        <th class="px-6 py-4 text-xs font-bold text-gray-500 uppercase w-16">No</th>
-                        <th class="px-6 py-4 text-xs font-bold text-gray-500 uppercase w-32">Kode DDC</th>
-                        <th class="px-6 py-4 text-xs font-bold text-gray-500 uppercase">Nama Kategori</th>
-                        <th class="px-6 py-4 text-xs font-bold text-gray-500 uppercase text-center w-32">Data Training</th>
-                        <th class="px-6 py-4 text-xs font-bold text-gray-500 uppercase text-center w-32">Status</th>
-                        <th class="px-6 py-4 text-xs font-bold text-gray-500 uppercase text-center w-32">Aksi</th>
+                        <th class="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider w-16 text-center">No</th>
+                        <th class="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider w-40">Kode DDC</th>
+                        <th class="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider">Nama Kategori</th>
+                        <th class="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider text-center w-32">Data Training</th>
+                        <th class="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider text-center w-32">Status</th>
+                        <th class="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider text-center w-32">Aksi</th>
                     </tr>
                 </thead>
                 <tbody id="tabel-kategori" class="divide-y divide-gray-200 text-sm">
                     <tr>
                         <td colspan="6" class="p-8 text-center text-gray-400">
-                            <i data-feather="loader" class="animate-spin w-6 h-6 mx-auto mb-2"></i>
-                            Memuat data dari database...
+                            <div class="flex items-center justify-center gap-2">
+                                <i data-feather="loader" class="animate-spin w-5 h-5"></i>
+                                <span>Menghubungkan ke database...</span>
+                            </div>
                         </td>
                     </tr>
                 </tbody>
@@ -105,32 +125,32 @@
     </div>
 </div>
 
-<div id="modal-kategori" class="fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center z-50 hidden">
-    <div class="bg-white rounded-xl shadow-2xl w-full max-w-md mx-4 animate-fade-in">
+<div id="modal-kategori" class="fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center z-50 hidden backdrop-blur-sm transition-opacity">
+    <div class="bg-white rounded-xl shadow-2xl w-full max-w-md mx-4 animate-fade-in transform scale-100">
         <div class="p-6">
             <div class="flex justify-between items-center mb-6">
                 <h3 class="text-xl font-bold text-gray-800" id="modal-kategori-title">Tambah Kategori Baru</h3>
-                <button onclick="tutupModalKategori()" class="text-gray-400 hover:text-gray-600">
-                    <i data-feather="x" class="w-5 h-5"></i>
+                <button onclick="tutupModalKategori()" class="text-gray-400 hover:text-gray-600 transition">
+                    <i data-feather="x" class="w-6 h-6"></i>
                 </button>
             </div>
             
-            <div class="space-y-4">
+            <div class="space-y-5">
                 <input type="hidden" id="kodeLama">
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Kode DDC <span class="text-red-500">*</span></label>
-                    <input type="text" id="inputKodeDDC" class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition" placeholder="Contoh: 004.0288">
+                    <label class="block text-sm font-bold text-gray-700 mb-1">Kode DDC <span class="text-red-500">*</span></label>
+                    <input type="text" id="inputKodeDDC" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition" placeholder="Contoh: 004.0288">
                     <p class="text-xs text-gray-500 mt-1">Format: 3 digit utama (004-999) diikuti titik dan maksimal 3 digit</p>
                 </div>
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Nama Kategori <span class="text-red-500">*</span></label>
-                    <input type="text" id="inputNamaKategori" class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition" placeholder="Masukkan nama kategori">
+                    <label class="block text-sm font-bold text-gray-700 mb-1">Nama Kategori <span class="text-red-500">*</span></label>
+                    <input type="text" id="inputNamaKategori" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition" placeholder="Masukkan nama kategori">
                 </div>
             </div>
             
             <div class="mt-8 flex justify-end space-x-3">
                 <button onclick="tutupModalKategori()" class="px-5 py-2.5 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg transition">Batal</button>
-                <button onclick="simpanKategori()" class="px-5 py-2.5 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition flex items-center">
+                <button onclick="simpanKategori()" class="px-5 py-2.5 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition flex items-center shadow-md">
                     <i data-feather="save" class="w-4 h-4 mr-2"></i> Simpan
                 </button>
             </div>
@@ -146,7 +166,7 @@ let localKategoriData = [];
 let dataTrainingCache = []; 
 let isEditMode = false;
 
-// PENTING: Path ini disesuaikan dengan struktur folder Anda
+// Path API Backend
 const API_URL = 'php_backend/api/get_kategori.php'; 
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -161,7 +181,7 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 // ==========================================
-// CRUD (DATABASE)
+// CRUD (DATABASE) & UTILITIES
 // ==========================================
 async function refreshDataKategori() {
     try {
@@ -170,30 +190,57 @@ async function refreshDataKategori() {
         
         if (Array.isArray(data)) {
             localKategoriData = data;
-            // Update Global Cache untuk halaman lain
+            // Update Global Cache
             localStorage.setItem("kategoriDDC", JSON.stringify(data));
             
-            renderTabelKategori(data);
+            // Terapkan Sortiran Default
+            handleSort(); 
             updateStatistikKategori();
         } else {
-            console.error("Format data salah:", data);
             document.getElementById('tabel-kategori').innerHTML = `<tr><td colspan="6" class="p-8 text-center text-red-500">Error: Format data tidak valid.</td></tr>`;
         }
     } catch (err) {
         console.error("Gagal load kategori:", err);
-        // Pesan Error Lebih Jelas
         document.getElementById('tabel-kategori').innerHTML = `
             <tr>
-                <td colspan="6" class="p-8 text-center text-red-500">
+                <td colspan="6" class="p-8 text-center text-red-500 bg-red-50 rounded-lg">
                     <div class="flex flex-col items-center">
                         <i data-feather="alert-triangle" class="w-8 h-8 mb-2"></i>
                         <span class="font-bold">Gagal terhubung ke Database.</span>
-                        <span class="text-sm mt-1">Cek apakah file <b>${API_URL}</b> ada dan XAMPP aktif.</span>
+                        <span class="text-sm mt-1">Cek file koneksi.php dan pastikan XAMPP aktif.</span>
                     </div>
                 </td>
             </tr>`;
         if (typeof feather !== 'undefined') feather.replace();
     }
+}
+
+// FITUR SORTING (URUTKAN)
+function handleSort() {
+    const sortType = document.getElementById('sortSelect').value;
+    
+    localKategoriData.sort((a, b) => {
+        if (sortType === 'kode_asc') {
+            return a.kode.localeCompare(b.kode, undefined, {numeric: true});
+        } else if (sortType === 'kode_desc') {
+            return b.kode.localeCompare(a.kode, undefined, {numeric: true});
+        } else if (sortType === 'nama_asc') {
+            return a.nama.localeCompare(b.nama);
+        } else if (sortType === 'nama_desc') {
+            return b.nama.localeCompare(a.nama);
+        }
+    });
+
+    // Setelah sort, terapkan filter pencarian (jika ada)
+    filterKategori();
+}
+
+function filterKategori() {
+    const key = document.getElementById('searchInput').value.toLowerCase();
+    const filtered = localKategoriData.filter(item => 
+        item.kode.toLowerCase().includes(key) || item.nama.toLowerCase().includes(key)
+    );
+    renderTabelKategori(filtered);
 }
 
 function renderTabelKategori(data) {
@@ -203,13 +250,10 @@ function renderTabelKategori(data) {
     if (data.length === 0) {
         tbody.innerHTML = `
             <tr>
-                <td colspan="6" class="p-8 text-center text-gray-400">
+                <td colspan="6" class="p-12 text-center text-gray-400">
                     <div class="flex flex-col items-center">
-                        <i data-feather="layers" class="w-12 h-12 mx-auto mb-3 text-gray-300"></i>
-                        <p class="text-lg font-medium text-gray-500 mb-2">Belum ada kategori</p>
-                        <button onclick="syncKategoriStandar()" class="text-blue-600 hover:text-blue-800 underline text-sm">
-                            Muat 32 Kategori Standar
-                        </button>
+                        <i data-feather="layers" class="w-16 h-16 mx-auto mb-4 text-gray-300"></i>
+                        <p class="text-lg font-medium text-gray-500 mb-2">Data Tidak Ditemukan</p>
                     </div>
                 </td>
             </tr>`;
@@ -235,30 +279,32 @@ function renderTabelKategori(data) {
         const iconStatus = isUsed ? '<i data-feather="check-circle" class="w-3 h-3 mr-1"></i>' : '<i data-feather="circle" class="w-3 h-3 mr-1"></i>';
 
         html += `
-            <tr class="hover:bg-gray-50 transition-colors" data-kode="${item.kode}">
-                <td class="px-6 py-4 text-gray-700 font-medium">${index + 1}</td>
+            <tr class="hover:bg-blue-50/50 transition-colors border-b border-gray-100 group">
+                <td class="px-6 py-4 text-gray-500 font-medium text-center">${index + 1}</td>
                 <td class="px-6 py-4">
-                    <code class="font-mono font-bold text-blue-700 bg-blue-50 px-2 py-1 rounded border border-blue-100">${item.kode}</code>
+                    <span class="font-mono font-bold text-blue-700 bg-blue-50 px-3 py-1.5 rounded border border-blue-100 text-sm shadow-sm">
+                        ${item.kode}
+                    </span>
                 </td>
                 <td class="px-6 py-4">
-                    <div class="font-medium text-gray-800">${item.nama}</div>
+                    <div class="font-bold text-gray-800 text-base">${item.nama}</div>
                 </td>
                 <td class="px-6 py-4 text-center">
-                    <span class="inline-flex items-center justify-center w-8 h-8 rounded-full ${isUsed ? "bg-green-100 text-green-700" : "bg-gray-100 text-gray-500"} font-bold text-sm">
+                    <span class="inline-flex items-center justify-center w-8 h-8 rounded-full ${isUsed ? "bg-green-100 text-green-700 font-bold" : "bg-gray-100 text-gray-400"} text-sm">
                         ${jumlah}
                     </span>
                 </td>
                 <td class="px-6 py-4 text-center">
-                    <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium border ${warnaStatus}">
+                    <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold border ${warnaStatus}">
                         ${iconStatus} ${teksStatus}
                     </span>
                 </td>
                 <td class="px-6 py-4 text-center">
                     <div class="flex justify-center gap-2">
-                        <button onclick="editKategori('${item.kode}')" class="text-blue-600 hover:text-blue-800 p-2 rounded-lg hover:bg-blue-50 transition" title="Edit">
+                        <button onclick="editKategori('${item.kode}')" class="text-blue-600 hover:bg-blue-100 p-2 rounded-lg transition" title="Edit">
                             <i data-feather="edit" class="w-4 h-4"></i>
                         </button>
-                        <button onclick="hapusKategori('${item.kode}')" class="text-red-600 hover:text-red-800 p-2 rounded-lg hover:bg-red-50 transition ${isUsed ? "opacity-50 cursor-not-allowed" : ""}" title="Hapus" ${isUsed ? "disabled" : ""}>
+                        <button onclick="hapusKategori('${item.kode}')" class="text-red-600 hover:bg-red-100 p-2 rounded-lg transition ${isUsed ? "opacity-50 cursor-not-allowed" : ""}" title="Hapus" ${isUsed ? "disabled" : ""}>
                             <i data-feather="trash-2" class="w-4 h-4"></i>
                         </button>
                     </div>
@@ -267,14 +313,6 @@ function renderTabelKategori(data) {
     });
     tbody.innerHTML = html;
     feather.replace();
-}
-
-function handleSearch() {
-    const key = document.getElementById('searchInput').value.toLowerCase();
-    const filtered = localKategoriData.filter(item => 
-        item.kode.toLowerCase().includes(key) || item.nama.toLowerCase().includes(key)
-    );
-    renderTabelKategori(filtered);
 }
 
 function updateStatistikKategori() {
@@ -352,7 +390,7 @@ function hapusKategori(kode) {
     }
 
     Swal.fire({
-        title: 'Hapus Kategori?', text: `Kode ${kode} akan dihapus.`, icon: 'warning',
+        title: 'Hapus Kategori?', text: `Kode ${kode} akan dihapus permanen.`, icon: 'warning',
         showCancelButton: true, confirmButtonColor: '#d33', confirmButtonText: 'Ya, Hapus'
     }).then(async (result) => {
         if (result.isConfirmed) {
@@ -371,7 +409,6 @@ function hapusKategori(kode) {
 // IMPORT & EXPORT EXCEL (.xlsx)
 // ==========================================
 
-// 1. Export Excel
 function exportExcel() {
     if (localKategoriData.length === 0) return Swal.fire('Info', 'Data kosong.', 'info');
 
@@ -390,7 +427,6 @@ function exportExcel() {
     Swal.fire({ icon: 'success', title: 'Export Berhasil', timer: 2000, showConfirmButton: false });
 }
 
-// 2. Import Excel
 function importExcel() {
     const input = document.createElement('input');
     input.type = 'file';
@@ -412,7 +448,6 @@ function importExcel() {
 
                 if (jsonData.length === 0) throw new Error("File Excel kosong.");
 
-                // Kirim JSON ke PHP
                 const res = await fetch(`${API_URL}?action=import_excel`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -436,7 +471,6 @@ function importExcel() {
     input.click();
 }
 
-// 3. Sync Standar (Menggunakan Endpoint Import Excel)
 function syncKategoriStandar() {
     Swal.fire({
         title: 'Sync Kategori Standar?',
@@ -447,7 +481,6 @@ function syncKategoriStandar() {
         confirmButtonText: 'Ya, Sync Sekarang'
     }).then(async (result) => {
         if (result.isConfirmed) {
-            // Data Standar 32 Kategori
             const standarData = [
                 { "Kode DDC": "004.0288", "Nama Kategori": "Perawatan, Perakitan & Servis Komputer" },
                 { "Kode DDC": "004.03", "Nama Kategori": "Kamus & Ensiklopedia Komputer" },
