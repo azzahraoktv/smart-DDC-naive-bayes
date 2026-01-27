@@ -48,18 +48,26 @@
     <div class="p-4 border-t border-blue-800 bg-blue-900">
         <div class="flex items-center mb-4 px-2">
             <div class="w-10 h-10 rounded-full bg-blue-600 flex items-center justify-center text-sm font-bold mr-3 border-2 border-blue-400 text-white">
-                P
+                <?php echo substr($_SESSION['nama_lengkap'] ?? 'P', 0, 1); ?>
             </div>
             <div>
-                <p class="text-sm font-bold text-white">Pustakawan</p>
+                <p class="text-sm font-bold text-white"><?php echo $_SESSION['nama_lengkap'] ?? 'Pustakawan'; ?></p>
                 <p class="text-xs text-emerald-300 flex items-center font-medium">
                     <span class="w-2 h-2 rounded-full bg-emerald-400 mr-1.5 animate-pulse"></span>
                     Online
                 </p>
             </div>
         </div>
+        
         <button onclick="handleLogout()" class="w-full flex items-center justify-center px-4 py-2 bg-red-600 hover:bg-red-700 rounded-lg transition-all duration-200 text-sm font-bold text-white shadow-sm border border-red-800">
             <i data-feather="log-out" class="mr-2 w-4 h-4"></i> Keluar
         </button>
+
+        <div class="mt-4 pt-3 border-t border-blue-800 text-center">
+            <p class="text-[10px] text-blue-300 leading-tight">
+                &copy; 2026 <strong>Smart DDC</strong><br>
+                Perpustakaan STIKOM El Rahma
+            </p>
+        </div>
     </div>
 </aside>

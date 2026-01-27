@@ -1,11 +1,46 @@
+<?php
+// --- BAGIAN 1: SETUP & PENGAMBILAN DATA ---
+
+// Pastikan session dimulai (jika belum dimulai di index.php)
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+}
+
+// Include koneksi.php
+// Sesuaikan path ini dengan letak file Anda sebenarnya.
+// Jika beranda.php ada di folder 'pages' dan koneksi.php ada di 'php_backend':
+if (!function_exists('fetchOne')) {
+    // Gunakan path relative atau absolute sesuai struktur folder Anda
+    // Contoh jika satu folder: include 'koneksi.php';
+    // Contoh jika beda folder: include '../php_backend/koneksi.php';
+    include $_SERVER['DOCUMENT_ROOT'] . '/smart-ddc/php_backend/koneksi.php'; 
+}
+
+// 1. Mengambil Total Klasifikasi
+// Menggunakan helper fetchOne() dari koneksi.php
+$data_klasifikasi = fetchOne("SELECT COUNT(*) as total FROM riwayat_klasifikasi");
+$total_klasifikasi = $data_klasifikasi['total'] ?? 0;
+
+// 2. Mengambil Total Data Training
+$data_latih = fetchOne("SELECT COUNT(*) as total FROM data_training");
+$total_latih = $data_latih['total'] ?? 0;
+
+// 3. Mengambil Total Kategori DDC
+$data_kategori = fetchOne("SELECT COUNT(*) as total FROM kategori_ddc");
+$total_kategori = $data_kategori['total'] ?? 0;
+
+// 4. Mengambil Akurasi Sistem Terakhir
+$data_akurasi = fetchOne("SELECT akurasi FROM hasil_pengujian ORDER BY id DESC LIMIT 1");
+$akurasi_sistem = $data_akurasi['akurasi'] ?? 0;
+?>
+
 <div id="page-beranda">
     <div class="mb-10">
         <h1 class="text-3xl font-extrabold text-gray-900 mb-2 tracking-tight">
             Selamat Datang, 
             <span id="display-username" class="text-blue-600">
                 <?php 
-                    // Mengambil data 'nama_lengkap' (Pustakawan) dari session
-                    echo isset($_SESSION['nama_lengkap']) ? $_SESSION['nama_lengkap'] : 'User'; 
+                    echo isset($_SESSION['nama_lengkap']) ? htmlspecialchars($_SESSION['nama_lengkap']) : 'User'; 
                 ?>
             </span>!
         </h1>
@@ -16,7 +51,7 @@
 
         <div class="mt-2 flex items-center">
             <span class="text-xs font-bold bg-blue-50 text-blue-600 px-3 py-1 rounded-full uppercase tracking-wider border border-blue-100">
-                Akses: <?php echo isset($_SESSION['role']) ? $_SESSION['role'] : '-'; ?>
+                Akses: <?php echo isset($_SESSION['role']) ? htmlspecialchars($_SESSION['role']) : '-'; ?>
             </span>
         </div>
     </div>
@@ -26,7 +61,9 @@
         <div class="relative overflow-hidden rounded-xl shadow-lg bg-[#8E44AD] transition-transform hover:scale-[1.02]">
             <div class="p-6">
                 <p class="text-sm font-bold opacity-80 uppercase tracking-wider">Total Klasifikasi</p>
-                <p class="text-4xl font-black mt-2" id="total-klasifikasi">0</p>
+                <p class="text-4xl font-black mt-2" id="total-klasifikasi">
+                    <?php echo number_format($total_klasifikasi); ?>
+                </p>
             </div>
             <i data-feather="bar-chart-2" class="absolute right-[-10px] top-1/2 -translate-y-1/2 w-24 h-24 opacity-20 rotate-12"></i>
             <div class="bg-black/10 py-2 px-6 text-[10px] flex justify-between items-center uppercase font-bold tracking-widest">
@@ -38,7 +75,9 @@
         <div class="relative overflow-hidden rounded-xl shadow-lg bg-[#EC407A] transition-transform hover:scale-[1.02]">
             <div class="p-6">
                 <p class="text-sm font-bold opacity-80 uppercase tracking-wider">Data Training</p>
-                <p class="text-4xl font-black mt-2" id="total-datalatih">0</p>
+                <p class="text-4xl font-black mt-2" id="total-datalatih">
+                    <?php echo number_format($total_latih); ?>
+                </p>
             </div>
             <i data-feather="database" class="absolute right-[-10px] top-1/2 -translate-y-1/2 w-24 h-24 opacity-20 rotate-12"></i>
             <div class="bg-black/10 py-2 px-6 text-[10px] flex justify-between items-center uppercase font-bold tracking-widest">
@@ -50,7 +89,9 @@
         <div class="relative overflow-hidden rounded-xl shadow-lg bg-[#26C6DA] transition-transform hover:scale-[1.02]">
             <div class="p-6">
                 <p class="text-sm font-bold opacity-80 uppercase tracking-wider">Kategori DDC</p>
-                <p class="text-4xl font-black mt-2" id="total-kategori">0</p>
+                <p class="text-4xl font-black mt-2" id="total-kategori">
+                    <?php echo number_format($total_kategori); ?>
+                </p>
             </div>
             <i data-feather="layers" class="absolute right-[-10px] top-1/2 -translate-y-1/2 w-24 h-24 opacity-20 rotate-12"></i>
             <div class="bg-black/10 py-2 px-6 text-[10px] flex justify-between items-center uppercase font-bold tracking-widest">
@@ -62,7 +103,9 @@
         <div class="relative overflow-hidden rounded-xl shadow-lg bg-[#3F51B5] transition-transform hover:scale-[1.02]">
             <div class="p-6">
                 <p class="text-sm font-bold opacity-80 uppercase tracking-wider">Akurasi Sistem</p>
-                <p class="text-4xl font-black mt-2" id="akurasi-sistem">0%</p>
+                <p class="text-4xl font-black mt-2" id="akurasi-sistem">
+                    <?php echo round($akurasi_sistem, 2); ?>%
+                </p>
             </div>
             <i data-feather="target" class="absolute right-[-10px] top-1/2 -translate-y-1/2 w-24 h-24 opacity-20 rotate-12"></i>
             <div class="bg-black/10 py-2 px-6 text-[10px] flex justify-between items-center uppercase font-bold tracking-widest">
@@ -71,7 +114,6 @@
             </div>
         </div>
     </div>
-
     <div class="bg-white rounded-2xl p-6 shadow-md border border-gray-100 mb-8">
         <div class="flex items-center justify-between mb-6">
             <h3 class="font-extrabold text-gray-800 text-xl flex items-center">
@@ -127,19 +169,16 @@ function loadRecentActivity() {
     const container = document.getElementById("recent-activity");
     if (!container) return;
 
-    // Ambil data global dari window
+    // Mengambil data dari variabel global JS (pastikan ini di-load di footer/header utama)
+    // Jika tidak ada data global, script ini hanya akan menampilkan 'Menunggu...'
     const rKlasifikasi = window.riwayatKlasifikasi || [];
     const hPengujian = window.hasilPengujian || [];
 
-    // 1. Update Akurasi
+    // 1. Update Akurasi via JS (hanya jika ada data baru di client-side)
     const akurasiEl = document.getElementById("akurasi-sistem");
-    if (akurasiEl) {
-        if (hPengujian.length > 0) {
-            const acc = hPengujian[hPengujian.length - 1].akurasi;
-            akurasiEl.textContent = (acc !== undefined ? acc : 0) + "%";
-        } else {
-            akurasiEl.textContent = "0%";
-        }
+    if (akurasiEl && hPengujian.length > 0) {
+        const acc = hPengujian[hPengujian.length - 1].akurasi;
+        akurasiEl.textContent = (acc !== undefined ? acc : 0) + "%";
     }
 
     // 2. Render List Aktivitas

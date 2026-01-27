@@ -1,14 +1,9 @@
-<?php
-// Ambil data dari session atau inisialisasi array kosong
-$riwayat_data = isset($_SESSION['riwayat_klasifikasi']) ? $_SESSION['riwayat_klasifikasi'] : [];
-?>
-
 <div id="page-riwayat-klasifikasi" class="p-6">
     <div class="mb-8">
         <h1 class="text-2xl font-bold text-gray-800 mb-2">Riwayat Klasifikasi</h1>
-        <p class="text-gray-600 text-base">Daftar riwayat judul buku yang telah diklasifikasikan.</p>
+        <p class="text-gray-600 text-base">Daftar riwayat judul buku yang tersimpan di database.</p>
         
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mt-6">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
             <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-200">
                 <div class="flex items-center">
                     <div class="p-3 rounded-lg bg-blue-100 text-blue-600 mr-4">
@@ -48,333 +43,381 @@ $riwayat_data = isset($_SESSION['riwayat_klasifikasi']) ? $_SESSION['riwayat_kla
     </div>
 
     <div class="mb-6 bg-white p-4 rounded-xl shadow-sm border border-gray-200">
-        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
-            <div class="flex flex-col md:flex-row md:items-center gap-4 flex-1">
-                <div class="relative flex-1 md:max-w-md">
-                    <i data-feather="search" class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5"></i>
-                    <input type="text" id="search-riwayat" placeholder="Cari judul buku..." onkeyup="filterRiwayat()"
-                           class="pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg text-sm w-full focus:ring-2 focus:ring-blue-500 outline-none">
+        <div class="flex flex-col xl:flex-row justify-between gap-4">
+            
+            <div class="flex flex-col md:flex-row gap-3 flex-1">
+                <div class="relative flex-1">
+                    <i data-feather="search" class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4"></i>
+                    <input type="text" id="search-riwayat" placeholder="Cari judul buku..." oninput="resetPageAndRender()"
+                           class="pl-10 pr-4 py-2 border border-gray-300 rounded-lg text-sm w-full focus:ring-2 focus:ring-blue-500 outline-none transition">
                 </div>
                 
-                <select id="filter-kategori" onchange="filterRiwayat()" class="border border-gray-300 rounded-lg px-4 py-2.5 text-sm outline-none bg-white">
-                    <option value="">Semua Kategori</option>
-                </select>
+                <div class="w-full md:w-48">
+                    <select id="filter-kategori" onchange="resetPageAndRender()" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm outline-none bg-white focus:ring-2 focus:ring-blue-500 transition">
+                        <option value="">Semua Kategori</option>
+                    </select>
+                </div>
+
+                <div class="w-full md:w-40">
+                    <select id="rowsPerPage" onchange="resetPageAndRender()" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm outline-none bg-white focus:ring-2 focus:ring-blue-500 transition">
+                        <option value="10">Tampil 10</option>
+                        <option value="25">Tampil 25</option>
+                        <option value="50">Tampil 50</option>
+                        <option value="100">Tampil 100</option>
+                        <option value="-1">Semua Data</option>
+                    </select>
+                </div>
             </div>
             
-            <div class="flex flex-wrap gap-2">
-                <button onclick="exportRiwayat()" class="bg-green-600 hover:bg-green-700 text-white px-5 py-2.5 rounded-lg text-sm font-medium shadow-sm transition flex items-center">
-                    <i data-feather="download" class="mr-2 w-4 h-4"></i> Export Excel
+            <div class="flex flex-wrap gap-2 justify-end">
+                <button onclick="exportRiwayat()" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm font-medium shadow-sm transition flex items-center transform hover:-translate-y-0.5">
+                    <i data-feather="download" class="mr-2 w-4 h-4"></i> Excel
                 </button>
-                <button onclick="hapusSemuaRiwayat()" class="bg-red-50 text-red-600 hover:bg-red-100 px-5 py-2.5 rounded-lg text-sm font-medium transition flex items-center border border-red-100">
-                    <i data-feather="trash-2" class="mr-2 w-4 h-4"></i> Hapus Semua
+                <button onclick="hapusSemuaRiwayat()" class="bg-red-50 text-red-600 hover:bg-red-100 px-4 py-2 rounded-lg text-sm font-medium transition flex items-center border border-red-100 transform hover:-translate-y-0.5">
+                    <i data-feather="trash-2" class="mr-2 w-4 h-4"></i> Hapus
                 </button>
             </div>
         </div>
     </div>
 
-    <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-        <div id="loading-table" class="p-8 text-center">
-            <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-            <p class="mt-2 text-gray-500 text-sm">Memuat data riwayat...</p>
+    <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden min-h-[400px] flex flex-col">
+        <div id="loading-table" class="hidden absolute inset-0 bg-white/80 z-10 flex flex-col items-center justify-center">
+            <div class="inline-block animate-spin rounded-full h-8 w-8 border-4 border-blue-100 border-t-blue-600"></div>
+            <p class="mt-3 text-gray-500 text-sm font-medium">Mengambil data...</p>
         </div>
         
-        <div id="empty-state" class="p-12 text-center hidden">
-            <div class="bg-gray-50 rounded-full p-4 w-16 h-16 mx-auto mb-4 flex items-center justify-center">
-                <i data-feather="clock" class="w-8 h-8 text-gray-400"></i>
+        <div id="empty-state" class="hidden flex flex-col items-center justify-center py-20 text-center flex-1">
+            <div class="bg-gray-50 rounded-full p-6 mb-4">
+                <i data-feather="database" class="w-10 h-10 text-gray-300"></i>
             </div>
-            <h3 class="text-gray-600 font-semibold text-lg">Belum ada riwayat</h3>
-            <p class="text-gray-500 text-sm mb-4">Lakukan klasifikasi judul buku terlebih dahulu.</p>
+            <h3 class="text-gray-800 font-semibold text-lg mb-1">Data Tidak Ditemukan</h3>
+            <p class="text-gray-500 text-sm max-w-sm mx-auto">Coba ubah kata kunci pencarian atau filter kategori.</p>
         </div>
         
-        <div class="overflow-x-auto hidden" id="table-container">
-            <table class="w-full text-left">
-                <thead class="bg-gray-50 border-b border-gray-200">
-                    <tr>
-                        <th class="px-4 py-4 text-center w-10 bg-gray-50">
-                            <input type="checkbox" id="check-all" onclick="toggleAllCheckboxes(this)" class="rounded border-gray-300 text-blue-600 focus:ring-blue-500 w-4 h-4 cursor-pointer">
+        <div class="overflow-x-auto flex-1" id="table-container">
+            <table class="w-full text-left border-collapse">
+                <thead>
+                    <tr class="bg-gray-50 border-b border-gray-200 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                        <th class="px-6 py-4 w-16 text-center">No</th>
+                        <th class="px-6 py-4 w-40 cursor-pointer hover:text-blue-600" onclick="changeSort('waktu')">
+                            Waktu <i data-feather="chevron-down" class="inline w-3 h-3 ml-1"></i>
                         </th>
-                        <th class="px-6 py-4 text-sm font-bold text-gray-600 uppercase w-16 text-center">No</th>
-                        <th class="px-6 py-4 text-sm font-bold text-gray-600 uppercase w-48">Waktu</th>
-                        <th class="px-6 py-4 text-sm font-bold text-gray-600 uppercase">Judul Buku</th>
-                        <th class="px-6 py-4 text-sm font-bold text-gray-600 uppercase text-center w-32">Kode DDC</th>
-                        <th class="px-6 py-4 text-sm font-bold text-gray-600 uppercase">Kategori</th>
-                        <th class="px-6 py-4 text-sm font-bold text-gray-600 uppercase text-center w-24">Aksi</th>
+                        <th class="px-6 py-4 cursor-pointer hover:text-blue-600" onclick="changeSort('judul')">
+                            Judul Buku <i data-feather="chevron-down" class="inline w-3 h-3 ml-1"></i>
+                        </th>
+                        <th class="px-6 py-4 w-48">Kategori Hasil</th>
+                        <th class="px-6 py-4 w-32 text-center cursor-pointer hover:text-blue-600" onclick="changeSort('conf')">
+                            Conf. <i data-feather="chevron-down" class="inline w-3 h-3 ml-1"></i>
+                        </th>
+                        <th class="px-6 py-4 w-24 text-center">Aksi</th>
                     </tr>
                 </thead>
-                <tbody id="tabel-riwayat" class="divide-y divide-gray-100 text-sm"></tbody>
+                <tbody id="tabel-riwayat" class="divide-y divide-gray-100 text-sm bg-white">
+                    </tbody>
             </table>
         </div>
-    </div>
-</div>
 
-<div id="detail-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
-    <div class="bg-white rounded-xl p-6 max-w-lg w-full mx-4 shadow-xl transform transition-all">
-        <div class="flex justify-between items-center mb-4 border-b pb-3">
-            <h3 class="text-lg font-bold text-gray-800">Detail Hasil Klasifikasi</h3>
-            <button onclick="closeDetailModal()" class="text-gray-400 hover:text-gray-600">
-                <i data-feather="x" class="w-5 h-5"></i>
-            </button>
-        </div>
-        <div id="detail-content" class="mt-2"></div>
-        <div class="mt-6 text-right">
-            <button onclick="closeDetailModal()" class="bg-gray-100 text-gray-700 hover:bg-gray-200 px-4 py-2 rounded-lg text-sm font-medium">Tutup</button>
+        <div class="bg-gray-50 px-6 py-3 border-t border-gray-200 flex flex-col md:flex-row items-center justify-between gap-4 text-sm">
+            <div class="text-gray-600">
+                Menampilkan <span id="startEntry" class="font-bold text-gray-900">0</span> - <span id="endEntry" class="font-bold text-gray-900">0</span> dari <span id="totalEntries" class="font-bold text-gray-900">0</span> data
+            </div>
+            
+            <div class="flex items-center gap-2">
+                <button onclick="prevPage()" id="btnPrev" class="w-8 h-8 flex items-center justify-center rounded border border-gray-300 bg-white text-gray-500 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed">
+                    <i data-feather="chevron-left" class="w-4 h-4"></i>
+                </button>
+                <div id="paginationNumbers" class="flex gap-1 overflow-x-auto max-w-[200px] md:max-w-none">
+                    </div>
+                <button onclick="nextPage()" id="btnNext" class="w-8 h-8 flex items-center justify-center rounded border border-gray-300 bg-white text-gray-500 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed">
+                    <i data-feather="chevron-right" class="w-4 h-4"></i>
+                </button>
+            </div>
         </div>
     </div>
 </div>
 
 <script>
-// Variabel global
-let riwayatData = [];
-let filteredData = [];
+// ==========================================
+// CONFIG & STATE
+// ==========================================
+const API_HISTORY = 'php_backend/api/get_riwayat.php'; 
 
+let riwayatData = [];     // Semua data mentah dari DB
+let filteredData = [];    // Data setelah difilter Search/Kategori
+let currentSort = 'waktu'; // Default sorting
+
+// Pagination State
+let currentPage = 1;
+let rowsPerPage = 10;
+
+// Init
 document.addEventListener("DOMContentLoaded", function() {
-    initData();
-    loadRiwayat();
+    if(typeof feather !== 'undefined') feather.replace();
+    loadRiwayatFromDB();
 });
 
-function initData() {
-    const savedRiwayat = localStorage.getItem('riwayatKlasifikasi');
-    const dataBaruDariPHP = <?php echo json_encode($riwayat_data); ?>;
-    
-    let existingRiwayat = savedRiwayat ? JSON.parse(savedRiwayat) : [];
-
-    if (Array.isArray(dataBaruDariPHP) && dataBaruDariPHP.length > 0) {
-        dataBaruDariPHP.forEach(newItem => {
-            // Generate ID untuk keperluan delete
-            if(!newItem.id) newItem.id = Date.now() + Math.random().toString(36).substr(2, 9);
-            
-            const isDuplicate = existingRiwayat.some(oldItem => 
-                (oldItem.id && oldItem.id === newItem.id) || 
-                (oldItem.judul === newItem.judul && oldItem.waktu === newItem.waktu)
-            );
-            
-            if (!isDuplicate) {
-                existingRiwayat.push(newItem);
-            }
-        });
-        localStorage.setItem('riwayatKlasifikasi', JSON.stringify(existingRiwayat));
-    }
-    riwayatData = existingRiwayat;
-}
-
-function loadRiwayat() {
+// 1. LOAD DATA DARI SERVER
+async function loadRiwayatFromDB() {
     const loading = document.getElementById("loading-table");
-    const empty = document.getElementById("empty-state");
     const container = document.getElementById("table-container");
     
     loading.classList.remove('hidden');
-    container.classList.add('hidden');
-    empty.classList.add('hidden');
-
-    setTimeout(() => {
-        filteredData = [...riwayatData].sort((a, b) => new Date(b.waktu) - new Date(a.waktu));
+    container.classList.add('opacity-50');
+    
+    try {
+        const response = await fetch(API_HISTORY + '?action=list');
+        const res = await response.json();
         
-        loading.classList.add('hidden');
-        
-        if (filteredData.length === 0) {
-            empty.classList.remove('hidden');
+        if(res.status === 'success') {
+            riwayatData = res.data.map(item => ({
+                id: item.id,
+                judul: item.judul_buku,
+                kategori: item.kategori_hasil,
+                confidence: parseFloat(item.confidence || 0),
+                waktu: item.waktu
+            }));
+            
+            // Urutkan default (Terbaru)
+            riwayatData.sort((a, b) => new Date(b.waktu) - new Date(a.waktu));
+            
+            // Isi dropdown filter
+            populateFilterOptions();
+            
+            // Tampilkan
+            resetPageAndRender();
             updateStatistics();
         } else {
-            container.classList.remove('hidden');
-            renderTable();
-            updateStatistics();
-            updateFilterOptions();
+            riwayatData = [];
+            resetPageAndRender();
         }
-        feather.replace();
-    }, 300);
+    } catch (error) {
+        console.error("Gagal koneksi:", error);
+        riwayatData = [];
+        resetPageAndRender();
+    } finally {
+        loading.classList.add('hidden');
+        container.classList.remove('opacity-50');
+    }
 }
 
-function renderTable() {
-    const tbody = document.getElementById("tabel-riwayat");
-    const searchVal = document.getElementById('search-riwayat').value.toLowerCase();
-    const katVal = document.getElementById('filter-kategori').value;
-
-    const displayData = filteredData.filter(d => {
-        const matchJudul = d.judul ? d.judul.toLowerCase().includes(searchVal) : false;
-        const matchKat = katVal ? d.kategori === katVal : true;
-        return matchJudul && matchKat;
+// 2. LOGIKA FILTER & SORTING
+function applyFilterAndSort() {
+    const search = document.getElementById('search-riwayat').value.toLowerCase();
+    const catFilter = document.getElementById('filter-kategori').value;
+    
+    // Filter
+    filteredData = riwayatData.filter(item => {
+        const judul = (item.judul || "").toLowerCase();
+        const kat = (item.kategori || "");
+        return judul.includes(search) && (catFilter === "" || kat === catFilter);
     });
 
-    if (displayData.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="7" class="text-center py-8 text-gray-500">Data tidak ditemukan sesuai filter.</td></tr>`;
+    // Sorting
+    filteredData.sort((a, b) => {
+        if (currentSort === 'waktu') return new Date(b.waktu) - new Date(a.waktu);
+        if (currentSort === 'judul') return a.judul.localeCompare(b.judul);
+        if (currentSort === 'conf') return b.confidence - a.confidence;
+        return 0;
+    });
+}
+
+// 3. RENDER TABEL (DENGAN PAGINATION)
+function renderTable() {
+    const tbody = document.getElementById("tabel-riwayat");
+    tbody.innerHTML = '';
+
+    applyFilterAndSort(); // Update filteredData
+
+    const totalItems = filteredData.length;
+    
+    // Update Stats Footer
+    document.getElementById("totalEntries").textContent = totalItems;
+
+    if (totalItems === 0) {
+        document.getElementById("empty-state").classList.remove("hidden");
+        document.getElementById("table-container").classList.add("hidden");
+        updatePaginationUI(0, 0, 0);
         return;
+    } else {
+        document.getElementById("empty-state").classList.add("hidden");
+        document.getElementById("table-container").classList.remove("hidden");
     }
 
-    tbody.innerHTML = displayData.map((d, i) => {
-        let displayWaktu = '-';
-        if (d.waktu) {
-            const dateObj = new Date(d.waktu);
-            if (!isNaN(dateObj)) {
-                displayWaktu = dateObj.toLocaleString('id-ID', {
-                    day: 'numeric', month: 'short', year: 'numeric', 
-                    hour: '2-digit', minute: '2-digit'
-                });
-            }
+    // Pagination Logic
+    rowsPerPage = parseInt(document.getElementById("rowsPerPage").value);
+    const totalPages = rowsPerPage === -1 ? 1 : Math.ceil(totalItems / rowsPerPage);
+    
+    if (currentPage > totalPages) currentPage = totalPages;
+    if (currentPage < 1) currentPage = 1;
+
+    const startIndex = (currentPage - 1) * (rowsPerPage === -1 ? totalItems : rowsPerPage);
+    const endIndex = rowsPerPage === -1 ? totalItems : Math.min(startIndex + rowsPerPage, totalItems);
+    
+    // Update Info "Menampilkan X-Y"
+    document.getElementById("startEntry").textContent = startIndex + 1;
+    document.getElementById("endEntry").textContent = endIndex;
+    
+    // Update Tombol Pagination
+    updatePaginationUI(totalPages);
+
+    // Slice Data (Potong data sesuai halaman)
+    const pageData = filteredData.slice(startIndex, endIndex);
+
+    // Render Rows
+    pageData.forEach((item, index) => {
+        // Index global untuk nomor urut
+        const realNo = startIndex + index + 1;
+        
+        // Format Waktu
+        let displayWaktu = item.waktu;
+        try {
+            const d = new Date(item.waktu);
+            displayWaktu = d.toLocaleDateString('id-ID', { day: 'numeric', month: 'short' }) + 
+                          ' <span class="text-gray-300">|</span> ' + 
+                          d.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+        } catch(e) {}
+
+        // Format Badge
+        let conf = item.confidence <= 1 ? item.confidence * 100 : item.confidence;
+        let badgeColor = 'bg-gray-100 text-gray-600';
+        if (conf >= 80) badgeColor = 'bg-green-50 text-green-700 border-green-200 border';
+        else if (conf >= 60) badgeColor = 'bg-blue-50 text-blue-700 border-blue-200 border';
+        else badgeColor = 'bg-yellow-50 text-yellow-700 border-yellow-200 border';
+
+        // Format Kategori
+        let kodeDDC = '-', namaKat = item.kategori;
+        if(item.kategori && item.kategori.includes('-')) {
+             const parts = item.kategori.split('-');
+             kodeDDC = parts[0].trim();
         }
 
-        return `
-            <tr class="hover:bg-blue-50 transition border-b border-gray-100 last:border-0 group">
-                <td class="px-4 py-4 text-center">
-                    <input type="checkbox" class="row-checkbox rounded border-gray-300 text-blue-600 focus:ring-blue-500 w-4 h-4 cursor-pointer">
-                </td>
-                <td class="px-6 py-4 text-center text-gray-500 font-mono text-sm">${i + 1}</td>
-                <td class="px-6 py-4 text-gray-600 text-sm whitespace-nowrap">
-                    <div class="flex items-center">
-                        <i data-feather="clock" class="w-3 h-3 mr-2 text-gray-400"></i>
-                        ${displayWaktu}
-                    </div>
-                </td>
-                <td class="px-6 py-4">
-                    <p class="font-medium text-gray-800 text-base leading-snug cursor-pointer hover:text-blue-600" onclick="showDetail('${d.id}')">
-                        ${d.judul}
-                    </p>
-                </td>
-                <td class="px-6 py-4 text-center">
-                    <span class="bg-blue-100 text-blue-700 font-bold px-3 py-1.5 rounded-lg text-sm border border-blue-200 inline-block min-w-[60px]">
-                        ${d.kode}
-                    </span>
-                </td>
-                <td class="px-6 py-4">
-                    <span class="text-sm px-3 py-1.5 rounded-full bg-purple-50 text-purple-700 border border-purple-100 font-medium">
-                        ${d.kategori}
-                    </span>
-                </td>
-                <td class="px-6 py-4 text-center">
-                    <button onclick="hapusRiwayatItem('${d.id}')" class="text-gray-400 hover:text-red-600 bg-transparent hover:bg-red-50 p-2 rounded-full transition duration-200" title="Hapus Item Ini">
-                        <i data-feather="trash-2" class="w-5 h-5"></i>
-                    </button>
-                </td>
-            </tr>
+        const tr = document.createElement('tr');
+        tr.className = "hover:bg-blue-50/30 transition duration-150 border-b border-gray-50 last:border-0 fade-in";
+        tr.innerHTML = `
+            <td class="px-6 py-4 text-center text-gray-400 font-mono text-xs">${realNo}</td>
+            <td class="px-6 py-4 text-gray-500 text-xs whitespace-nowrap">${displayWaktu}</td>
+            <td class="px-6 py-4">
+                <div class="font-medium text-gray-800 text-sm leading-snug line-clamp-2" title="${item.judul}">${item.judul}</div>
+            </td>
+            <td class="px-6 py-4">
+                <div class="flex flex-col">
+                    <span class="text-xs font-bold text-gray-600 bg-gray-100 px-2 py-0.5 rounded w-fit mb-1">${kodeDDC}</span>
+                    <span class="text-xs text-gray-500 truncate max-w-[180px]">${namaKat}</span>
+                </div>
+            </td>
+            <td class="px-6 py-4 text-center">
+                <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold ${badgeColor}">
+                    ${conf.toFixed(1)}%
+                </span>
+            </td>
+            <td class="px-6 py-4 text-center">
+                <button onclick="hapusSatuRiwayat(${item.id})" class="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition">
+                    <i data-feather="trash" class="w-4 h-4"></i>
+                </button>
+            </td>
         `;
-    }).join('');
+        tbody.appendChild(tr);
+    });
     
-    feather.replace();
+    if(typeof feather !== 'undefined') feather.replace();
 }
 
-// Fitur Checkbox (Hanya visual select all)
-function toggleAllCheckboxes(master) {
-    const checkboxes = document.querySelectorAll('.row-checkbox');
-    checkboxes.forEach(cb => cb.checked = master.checked);
-}
+// 4. KONTROL PAGINATION UI
+function updatePaginationUI(totalPages) {
+    const btnPrev = document.getElementById("btnPrev");
+    const btnNext = document.getElementById("btnNext");
+    const container = document.getElementById("paginationNumbers");
+    
+    btnPrev.disabled = currentPage === 1;
+    btnNext.disabled = currentPage === totalPages || totalPages === 0;
+    
+    // Generate Numbers (Simple: Current, Prev, Next)
+    let html = '';
+    
+    // Logic simple: Max 5 pages visible
+    let startPage = Math.max(1, currentPage - 2);
+    let endPage = Math.min(totalPages, startPage + 4);
+    if(endPage - startPage < 4) startPage = Math.max(1, endPage - 4);
 
-function hapusRiwayatItem(id) {
-    // 1. Konfirmasi
-    if (!confirm('Apakah Anda yakin ingin menghapus data ini?')) return;
-    
-    // 2. Hapus data dari array (filter out)
-    const initialLength = riwayatData.length;
-    riwayatData = riwayatData.filter(d => String(d.id) !== String(id));
-    
-    // 3. Simpan ke LocalStorage
-    localStorage.setItem('riwayatKlasifikasi', JSON.stringify(riwayatData));
-    
-    // 4. Reload Tabel
-    loadRiwayat();
-    
-    // 5. Feedback User
-    if(riwayatData.length < initialLength) {
-        showToast('Data berhasil dihapus', 'success');
-    } else {
-        showToast('Gagal menghapus data', 'warning');
+    for(let i = startPage; i <= endPage; i++) {
+        const active = i === currentPage ? 'bg-blue-600 text-white border-blue-600 shadow-sm' : 'bg-white text-gray-600 hover:bg-gray-50 border-gray-300';
+        html += `<button onclick="goToPage(${i})" class="w-8 h-8 flex items-center justify-center rounded border text-xs font-medium transition ${active}">${i}</button>`;
     }
+    container.innerHTML = html;
 }
 
+// Navigasi
+function prevPage() { if(currentPage > 1) { currentPage--; renderTable(); } }
+function nextPage() { currentPage++; renderTable(); }
+function goToPage(p) { currentPage = p; renderTable(); }
+function resetPageAndRender() { currentPage = 1; renderTable(); }
+function changeSort(key) { currentSort = key; resetPageAndRender(); }
+
+// 5. UTILS LAINNYA (Export, Delete, Stats)
 function updateStatistics() {
     const total = riwayatData.length;
-    const categories = [...new Set(riwayatData.map(d => d.kategori))].filter(Boolean).length;
-    const today = new Date().toDateString();
-    const todayCount = riwayatData.filter(d => {
-        const dDate = new Date(d.waktu);
-        return !isNaN(dDate) && dDate.toDateString() === today;
-    }).length;
+    const uniqueCats = new Set(riwayatData.map(d => d.kategori)).size;
+    const today = new Date().toISOString().slice(0, 10);
+    const todayCount = riwayatData.filter(d => (d.waktu || "").startsWith(today)).length;
 
     document.getElementById('total-klasifikasi').textContent = total;
-    document.getElementById('total-kategori').textContent = categories;
+    document.getElementById('total-kategori').textContent = uniqueCats;
     document.getElementById('total-hari-ini').textContent = todayCount;
 }
 
-function filterRiwayat() { renderTable(); }
-
-function updateFilterOptions() {
+function populateFilterOptions() {
     const select = document.getElementById('filter-kategori');
-    const currentVal = select.value;
     const categories = [...new Set(riwayatData.map(d => d.kategori))].filter(Boolean).sort();
-    select.innerHTML = '<option value="">Semua Kategori</option>' + 
-        categories.map(cat => `<option value="${cat}" ${cat === currentVal ? 'selected' : ''}>${cat}</option>`).join('');
-}
-
-function hapusSemuaRiwayat() {
-    if (riwayatData.length === 0) return;
-    if (!confirm('Hapus SELURUH riwayat? Data tidak bisa dikembalikan.')) return;
-    riwayatData = [];
-    localStorage.setItem('riwayatKlasifikasi', JSON.stringify([]));
-    loadRiwayat();
-    showToast('Seluruh riwayat berhasil dihapus', 'success');
+    select.innerHTML = '<option value="">Semua Kategori</option>';
+    categories.forEach(cat => {
+        const option = document.createElement('option');
+        option.value = cat;
+        option.textContent = cat;
+        select.appendChild(option);
+    });
 }
 
 function exportRiwayat() {
-    if (riwayatData.length === 0) return showToast('Tidak ada data', 'warning');
-    let csv = 'No,Waktu,Judul Buku,Kode DDC,Kategori\n';
-    const dataToExport = [...riwayatData].sort((a, b) => new Date(b.waktu) - new Date(a.waktu));
-    dataToExport.forEach((d, index) => { 
-        const cleanJudul = d.judul ? d.judul.replace(/"/g, '""') : "";
-        const waktu = d.waktu ? new Date(d.waktu).toLocaleString('id-ID') : '-';
-        csv += `${index+1},"${waktu}","${cleanJudul}",${d.kode},"${d.kategori}"\n`; 
+    if (filteredData.length === 0) return alert("Tidak ada data untuk diexport.");
+    let csv = "No,Waktu,Judul Buku,Kategori,Confidence\n";
+    filteredData.forEach((row, index) => {
+        let cleanJudul = (row.judul || "").replace(/"/g, '""');
+        csv += `${index+1},"${row.waktu}","${cleanJudul}","${row.kategori}","${row.confidence}"\n`;
     });
     const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-    const url = window.URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.setAttribute('href', url);
-    a.setAttribute('download', `Riwayat_Klasifikasi_${Date.now()}.csv`);
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "Riwayat_Klasifikasi_" + new Date().toISOString().slice(0,10) + ".csv";
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
-    showToast('Berhasil download Excel', 'success');
 }
 
-function showDetail(id) {
-    const data = riwayatData.find(d => String(d.id) === String(id));
-    if (!data) return;
-    const waktu = data.waktu ? new Date(data.waktu).toLocaleString('id-ID', { dateStyle: 'full', timeStyle: 'short' }) : '-';
-    document.getElementById('detail-content').innerHTML = `
-        <div class="space-y-6">
-            <div class="bg-gray-50 p-4 rounded-lg border border-gray-100">
-                <label class="text-xs text-gray-500 uppercase font-bold tracking-wider">Judul Buku</label>
-                <p class="font-serif text-xl text-gray-800 mt-1 leading-relaxed">${data.judul}</p>
-            </div>
-            <div class="grid grid-cols-2 gap-4">
-                <div>
-                    <label class="text-xs text-gray-500 uppercase font-bold tracking-wider">Kode DDC</label>
-                    <div class="mt-1 flex items-center"><span class="text-2xl font-bold text-blue-600">${data.kode}</span></div>
-                </div>
-                 <div>
-                    <label class="text-xs text-gray-500 uppercase font-bold tracking-wider">Kategori</label>
-                    <p class="font-medium text-gray-800 mt-1 bg-purple-50 text-purple-700 inline-block px-3 py-1 rounded-lg border border-purple-100">${data.kategori}</p>
-                </div>
-            </div>
-            <div class="border-t pt-4">
-                <label class="text-xs text-gray-500 uppercase font-bold tracking-wider">Waktu Klasifikasi</label>
-                <div class="flex items-center mt-1 text-gray-700"><i data-feather="calendar" class="w-4 h-4 mr-2"></i>${waktu}</div>
-            </div>
-        </div>
-    `;
-    document.getElementById('detail-modal').classList.remove('hidden');
-    document.getElementById('detail-modal').classList.add('flex');
-    feather.replace();
+async function hapusSatuRiwayat(id) {
+    if(!confirm("Yakin hapus?")) return;
+    try {
+        const res = await fetch(`${API_HISTORY}?action=delete&id=${id}`);
+        const json = await res.json();
+        if(json.status === 'success') {
+            riwayatData = riwayatData.filter(d => d.id != id);
+            resetPageAndRender();
+            updateStatistics();
+        } else alert("Gagal: " + json.message);
+    } catch(e) { alert("Error sistem."); }
 }
 
-function closeDetailModal() { 
-    document.getElementById('detail-modal').classList.add('hidden');
-    document.getElementById('detail-modal').classList.remove('flex');
-}
-
-function showToast(message, type = 'info') {
-    const toast = document.createElement('div');
-    const color = type === 'success' ? 'bg-emerald-600' : (type === 'warning' ? 'bg-yellow-600' : 'bg-red-600');
-    toast.className = `fixed bottom-6 right-6 px-6 py-4 ${color} text-white rounded-xl shadow-2xl z-[100] transition-all flex items-center text-sm font-medium`;
-    toast.innerHTML = `<i data-feather="${type === 'success' ? 'check-circle' : 'info'}" class="w-5 h-5 mr-3"></i> ${message}`;
-    document.body.appendChild(toast);
-    feather.replace();
-    setTimeout(() => { toast.remove(); }, 3000);
+async function hapusSemuaRiwayat() {
+    if(riwayatData.length === 0) return;
+    if(!confirm("RESET SEMUA DATA?")) return;
+    try {
+        const res = await fetch(`${API_HISTORY}?action=hapus_semua`);
+        const json = await res.json();
+        if(json.status === 'success') {
+            riwayatData = [];
+            resetPageAndRender();
+            updateStatistics();
+        } else alert("Gagal reset: " + json.message);
+    } catch(e) { alert("Error sistem."); }
 }
 </script>
