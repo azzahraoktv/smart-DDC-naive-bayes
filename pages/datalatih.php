@@ -15,7 +15,6 @@
                 <p class="text-3xl font-extrabold text-gray-800" id="totalData">0</p>
             </div>
         </div>
-        
         <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200 flex items-center transition-all hover:shadow-md h-full">
             <div class="p-4 rounded-lg bg-green-50 text-green-700 mr-5">
                 <i data-feather="grid" class="w-8 h-8"></i>
@@ -25,7 +24,6 @@
                 <p class="text-3xl font-extrabold text-gray-800" id="totalCategories">0</p>
             </div>
         </div>
-        
         <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200 flex items-center transition-all hover:shadow-md h-full">
             <div class="p-4 rounded-lg bg-purple-50 text-purple-700 mr-5">
                 <i data-feather="clock" class="w-8 h-8"></i>
@@ -39,35 +37,26 @@
 
     <div class="mb-4 bg-white p-6 rounded-xl shadow-sm border border-gray-200 w-full">
         <div class="flex flex-col xl:flex-row gap-4 justify-between items-center w-full">
-            
             <div class="flex flex-col lg:flex-row gap-3 w-full xl:w-auto flex-1">
-                
                 <div class="relative w-full lg:flex-1">
                     <i data-feather="search" class="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5"></i>
-                    <input type="text" id="searchInput" placeholder="Cari judul buku..." 
-                        class="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-lg text-base focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition shadow-sm">
+                    <input type="text" id="searchInput" placeholder="Cari judul buku..." class="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-lg text-base focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition shadow-sm">
                 </div>
-                
                 <div class="w-full lg:w-48">
-                    <select id="filterCategory" onchange="resetPaginationAndRender()" 
-                        class="w-full px-4 py-3 border border-gray-300 rounded-lg text-base bg-white focus:ring-2 focus:ring-blue-500 outline-none transition shadow-sm cursor-pointer truncate">
+                    <select id="filterCategory" onchange="resetPaginationAndRender()" class="w-full px-4 py-3 border border-gray-300 rounded-lg text-base bg-white focus:ring-2 focus:ring-blue-500 outline-none transition shadow-sm cursor-pointer truncate">
                         <option value="">Semua Kategori</option>
                     </select>
                 </div>
-
                 <div class="w-full lg:w-40">
-                    <select id="sortBy" onchange="resetPaginationAndRender()" 
-                        class="w-full px-4 py-3 border border-gray-300 rounded-lg text-base bg-white focus:ring-2 focus:ring-blue-500 outline-none transition shadow-sm cursor-pointer">
+                    <select id="sortBy" onchange="resetPaginationAndRender()" class="w-full px-4 py-3 border border-gray-300 rounded-lg text-base bg-white focus:ring-2 focus:ring-blue-500 outline-none transition shadow-sm cursor-pointer">
                         <option value="newest">Urut: Terbaru</option>
                         <option value="oldest">Urut: Terlama</option>
                         <option value="title_asc">Urut: Judul (A-Z)</option>
                         <option value="ddc_asc">Urut: Kode (0-9)</option>
                     </select>
                 </div>
-
                 <div class="w-full lg:w-32">
-                    <select id="rowsPerPage" onchange="resetPaginationAndRender()" 
-                        class="w-full px-4 py-3 border border-gray-300 rounded-lg text-base bg-white focus:ring-2 focus:ring-blue-500 outline-none transition shadow-sm cursor-pointer">
+                    <select id="rowsPerPage" onchange="resetPaginationAndRender()" class="w-full px-4 py-3 border border-gray-300 rounded-lg text-base bg-white focus:ring-2 focus:ring-blue-500 outline-none transition shadow-sm cursor-pointer">
                         <option value="10">10 Data</option>
                         <option value="25">25 Data</option>
                         <option value="50">50 Data</option>
@@ -109,8 +98,7 @@
                         <th class="px-6 py-5 text-sm font-bold text-gray-600 uppercase tracking-wider text-center w-32">Aksi</th>
                     </tr>
                 </thead>
-                <tbody id="tabel-datalatih" class="divide-y divide-gray-100 text-base">
-                    </tbody>
+                <tbody id="tabel-datalatih" class="divide-y divide-gray-100 text-base"></tbody>
             </table>
         </div>
         
@@ -119,12 +107,11 @@
                 Menampilkan <span id="startEntry" class="font-bold text-gray-900">0</span> - <span id="endEntry" class="font-bold text-gray-900">0</span> dari <span id="totalEntries" class="font-bold text-gray-900">0</span> data
             </div>
             <div class="flex items-center gap-2">
-                <button onclick="prevPage()" id="btnPrev" class="w-10 h-10 flex items-center justify-center rounded-lg border border-gray-300 bg-white text-gray-600 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed transition shadow-sm">
+                <button onclick="prevPage()" id="btnPrev" class="w-10 h-10 flex items-center justify-center rounded-lg border border-gray-300 bg-white text-gray-600 hover:bg-gray-100 disabled:opacity-50 transition shadow-sm">
                     <i data-feather="chevron-left" class="w-5 h-5"></i>
                 </button>
-                <div id="paginationNumbers" class="flex gap-2 overflow-x-auto max-w-[250px]">
-                    </div>
-                <button onclick="nextPage()" id="btnNext" class="w-10 h-10 flex items-center justify-center rounded-lg border border-gray-300 bg-white text-gray-600 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed transition shadow-sm">
+                <div id="paginationNumbers" class="flex gap-2 overflow-x-auto max-w-[250px]"></div>
+                <button onclick="nextPage()" id="btnNext" class="w-10 h-10 flex items-center justify-center rounded-lg border border-gray-300 bg-white text-gray-600 hover:bg-gray-100 disabled:opacity-50 transition shadow-sm">
                     <i data-feather="chevron-right" class="w-5 h-5"></i>
                 </button>
             </div>
@@ -174,20 +161,25 @@
 <script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
 
 <script>
+// KONFIGURASI
 const API_URL = 'php_backend/api/get_data_training.php';
 let globalDataTraining = [];
 let globalKategori = [];
 let currentPage = 1;
 let rowsPerPage = 10;
 
+// --- LOAD DATA ---
 async function loadDataToTable() {
     try {
+        // Load Kategori dulu
         const resKat = await fetch(`${API_URL}?action=get_categories`);
         const jsonKat = await resKat.json();
         if(jsonKat.status === 'success') {
             globalKategori = jsonKat.data;
             populateFilterAndModal();
         }
+
+        // Load Data Training
         const res = await fetch(`${API_URL}?action=list`);
         const json = await res.json();
         if (json.status === 'success') {
@@ -195,9 +187,13 @@ async function loadDataToTable() {
             renderTable(); 
             updateStatistics();
         } 
-    } catch (error) { console.error("Error:", error); }
+    } catch (error) { 
+        console.error("Error:", error);
+        showNotification('error', 'Koneksi Error', 'Gagal memuat data');
+    }
 }
 
+// --- FILTER & SORT ---
 function getFilteredAndSortedData() {
     const searchTerm = document.getElementById('searchInput').value.toLowerCase();
     const filterCategory = document.getElementById('filterCategory').value;
@@ -226,6 +222,7 @@ function getFilteredAndSortedData() {
     return filtered;
 }
 
+// --- RENDER TABLE ---
 function renderTable() {
     const tbody = document.getElementById("tabel-datalatih");
     if (!tbody) return;
@@ -267,8 +264,7 @@ function renderTable() {
                 <td class="px-6 py-5">
                     <div class="font-bold text-gray-900 text-base leading-relaxed line-clamp-2" title="${judulSafe}">${judulSafe}</div>
                     <div class="text-sm text-gray-500 mt-1 flex items-center">
-                        <i data-feather="calendar" class="w-4 h-4 mr-2"></i>
-                        ${formatDate(item.created_at)}
+                        <i data-feather="calendar" class="w-4 h-4 mr-2"></i> ${formatDate(item.created_at)}
                     </div>
                 </td>
                 <td class="px-6 py-5">
@@ -300,13 +296,11 @@ function renderTable() {
     checkIfAnySelectedTraining();
 }
 
+// --- PAGINATION ---
 function updatePaginationButtons(totalPages) {
-    const btnPrev = document.getElementById("btnPrev");
-    const btnNext = document.getElementById("btnNext");
     const container = document.getElementById("paginationNumbers");
-    
-    btnPrev.disabled = currentPage === 1;
-    btnNext.disabled = currentPage === totalPages || totalPages === 0;
+    document.getElementById("btnPrev").disabled = currentPage === 1;
+    document.getElementById("btnNext").disabled = currentPage === totalPages || totalPages === 0;
     
     let html = '';
     let startPage = Math.max(1, currentPage - 2);
@@ -314,28 +308,17 @@ function updatePaginationButtons(totalPages) {
     if(endPage - startPage < 4) startPage = Math.max(1, endPage - 4);
     
     for(let i = startPage; i <= endPage; i++) {
-        const activeClass = i === currentPage 
-            ? "bg-blue-600 text-white border-blue-600 shadow-md" 
-            : "bg-white text-gray-700 border-gray-300 hover:bg-gray-50";
+        const activeClass = i === currentPage ? "bg-blue-600 text-white border-blue-600 shadow-md" : "bg-white text-gray-700 border-gray-300 hover:bg-gray-50";
         html += `<button onclick="goToPage(${i})" class="w-10 h-10 flex items-center justify-center rounded-lg border text-sm font-bold transition ${activeClass}">${i}</button>`;
     }
     container.innerHTML = html;
 }
-
 function prevPage() { if(currentPage > 1) { currentPage--; renderTable(); } }
 function nextPage() { currentPage++; renderTable(); }
 function goToPage(page) { currentPage = page; renderTable(); }
-function resetPaginationAndRender() {
-    currentPage = 1;
-    rowsPerPage = parseInt(document.getElementById("rowsPerPage").value);
-    renderTable();
-}
+function resetPaginationAndRender() { currentPage = 1; rowsPerPage = parseInt(document.getElementById("rowsPerPage").value); renderTable(); }
 
-function formatJudulBuku(str) { 
-    if (!str) return "";
-    return str.replace(/\w\S*/g, (txt) => txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase());
-}
-
+// --- SIMPAN DATA (ADD/UPDATE - VERSI FIX POST) ---
 async function simpanDataTraining() {
     const id = document.getElementById('inputIdData').value;
     const judul = document.getElementById('inputJudulBuku').value.trim();
@@ -344,73 +327,205 @@ async function simpanDataTraining() {
 
     if (!judul || !kategoriId) { showNotification('error', 'Gagal', 'Judul dan Kategori wajib diisi.'); return; }
 
-    const isDuplicate = globalDataTraining.some(item => {
-        if (id && item.id == id) return false; 
-        return item.judul_buku.toLowerCase().trim() === judul.toLowerCase() && item.deskripsi.trim() === deskripsi;
-    });
-    if (isDuplicate) { Swal.fire({ icon: 'error', title: 'Duplikat!', text: 'Data sudah ada.' }); return; }
+    // Gunakan FormData agar bisa kirim POST dengan aman
+    const formData = new FormData();
+    formData.append('judul', judul);
+    formData.append('deskripsi', deskripsi);
+    formData.append('kategori_id', kategoriId);
+    if(id) formData.append('id', id);
 
     const action = id ? 'update' : 'add';
-    const url = `${API_URL}?action=${action}&id=${id}&judul=${encodeURIComponent(judul)}&deskripsi=${encodeURIComponent(deskripsi)}&kategori_id=${kategoriId}`;
-
+    
     try {
-        const res = await fetch(url);
+        const res = await fetch(`${API_URL}?action=${action}`, {
+            method: 'POST',
+            body: formData
+        });
         const json = await res.json();
+        
         if (json.status === 'success') {
             showNotification('success', 'Berhasil', json.message);
             tutupModalDataTraining();
             loadDataToTable(); 
-        } else showNotification('error', 'Gagal', json.message);
-    } catch (error) { showNotification('error', 'Error', 'Terjadi kesalahan sistem.'); }
+        } else {
+            showNotification('error', 'Gagal', json.message);
+        }
+    } catch (error) { 
+        console.error(error);
+        showNotification('error', 'Error', 'Terjadi kesalahan sistem.'); 
+    }
 }
 
-function importDataTraining() { document.getElementById('fileInput')?.click(); importExcelDirectly(); } 
-function importExcelDirectly() {
-    const input = document.createElement('input');
-    input.type = 'file';
-    input.accept = '.xlsx, .xls';
+// --- IMPORT EXCEL (VERSI FIX & ROBUST) ---
+function importDataTraining() { 
+    // Trigger input file secara manual jika belum ada elemennya
+    let input = document.getElementById('fileInputImport');
+    if (!input) {
+        input = document.createElement('input');
+        input.type = 'file';
+        input.id = 'fileInputImport';
+        input.style.display = 'none';
+        input.accept = '.xlsx, .xls';
+        document.body.appendChild(input);
+    }
+    
+    // Reset value agar event onchange bisa trigger meski file sama dipilih ulang
+    input.value = '';
+    
     input.onchange = (e) => {
         const file = e.target.files[0];
         if(!file) return;
+        
         const reader = new FileReader();
         reader.onload = function(evt) {
-            const data = new Uint8Array(evt.target.result);
-            const workbook = XLSX.read(data, {type: 'array'});
-            const jsonData = XLSX.utils.sheet_to_json(workbook.Sheets[workbook.SheetNames[0]]);
-            processImportedData(jsonData);
+            try {
+                const data = new Uint8Array(evt.target.result);
+                const workbook = XLSX.read(data, {type: 'array'});
+                // Sheet pertama saja
+                const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
+                // Konversi ke JSON
+                const jsonData = XLSX.utils.sheet_to_json(firstSheet, { defval: "" });
+                processImportedData(jsonData);
+            } catch (err) {
+                console.error(err);
+                Swal.fire('Error', 'Gagal membaca file Excel. Pastikan format valid.', 'error');
+            }
         };
         reader.readAsArrayBuffer(file);
     };
+    
     input.click();
 }
 
 async function processImportedData(dataArray) {
-    let successCount = 0, failCount = 0;
-    Swal.fire({ title: 'Memproses Import...', html: 'Mohon tunggu...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
-
-    for (const item of dataArray) {
-        const judulRaw = item['Judul Buku'] || item['judul'] || item['Judul'];
-        const deskripsi = item['Deskripsi'] || item['deskripsi'] || "";
-        const kodeDDC = item['Kode DDC'] || item['kode'] || item['Kode'];
-
-        if (!judulRaw || !kodeDDC) { failCount++; continue; }
-        const kat = globalKategori.find(k => k.kode_ddc == kodeDDC);
-        if (!kat) { failCount++; continue; }
-
-        const judul = formatJudulBuku(judulRaw.toString());
-        const isDuplicate = globalDataTraining.some(existing => existing.judul_buku.toLowerCase() === judul.toLowerCase());
-        if (isDuplicate) { failCount++; continue; }
-
-        try {
-            const url = `${API_URL}?action=add&judul=${encodeURIComponent(judul)}&deskripsi=${encodeURIComponent(deskripsi)}&kategori_id=${kat.id}`;
-            await fetch(url);
-            successCount++;
-        } catch (e) { failCount++; }
+    // 1. Cek Kategori Master
+    if (!globalKategori || globalKategori.length === 0) {
+        Swal.fire('Gagal', 'Master Data Kategori DDC belum dimuat. Refresh halaman.', 'error');
+        return;
     }
-    Swal.close();
-    Swal.fire({ icon: 'info', title: 'Selesai', html: `Berhasil: <b>${successCount}</b><br>Gagal/Skip: <b>${failCount}</b>` }).then(() => loadDataToTable());
+
+    if (dataArray.length === 0) {
+        Swal.fire('Kosong', 'File Excel tidak memiliki data.', 'warning');
+        return;
+    }
+
+    let payloadBatch = [];
+    let errorCount = 0;
+
+    // 2. Loop Data Excel
+    dataArray.forEach((item, index) => {
+        // Fungsi pencari nilai kolom yang fleksibel (case-insensitive)
+        const findVal = (possibleKeys) => {
+            const keys = Object.keys(item);
+            for (let pk of possibleKeys) {
+                // Cari key yang cocok (abaikan huruf besar/kecil & spasi)
+                const found = keys.find(k => k.trim().toLowerCase() === pk.toLowerCase());
+                if (found) return item[found];
+            }
+            return null;
+        };
+
+        // Mapping Kolom Excel
+        const judulRaw = findVal(['Judul Buku', 'Judul', 'Title', 'Nama Buku']);
+        const kodeRaw  = findVal(['Kode DDC', 'Kode', 'DDC', 'Class', 'No Klasifikasi']);
+        const descRaw  = findVal(['Deskripsi', 'Sinopsis', 'Abstrak', 'Keterangan']);
+
+        // Jika Judul atau Kode kosong, skip baris ini
+        if (!judulRaw || (!kodeRaw && kodeRaw !== 0)) {
+            errorCount++;
+            return;
+        }
+
+        // 3. Normalisasi Kode DDC (PENTING!)
+        // Mengubah angka 4 menjadi string "004", atau 5.1 menjadi "005.1" dsb jika perlu
+        let codeStr = String(kodeRaw).trim();
+        
+        // Logika sederhana: jika panjang < 3 dan itu angka bulat, tambahkan 0 di depan
+        if (!codeStr.includes('.') && codeStr.length < 3) {
+             codeStr = codeStr.padStart(3, '0'); 
+        }
+
+        // 4. Cari ID Kategori dari Kode DDC
+        // Cari yang persis sama dulu
+        let categoryObj = globalKategori.find(k => k.kode_ddc === codeStr);
+
+        // Jika tidak ketemu, cari yang awalan kodenya sama (fallback)
+        if (!categoryObj) {
+            // Misal di Excel "004.6" tapi di DB master cuma ada "004"
+            // Kita ambil induknya "004"
+            const parentCode = codeStr.split('.')[0].padStart(3, '0');
+            categoryObj = globalKategori.find(k => k.kode_ddc === parentCode);
+        }
+
+        if (categoryObj) {
+            payloadBatch.push({
+                judul: String(judulRaw).trim(),
+                deskripsi: descRaw ? String(descRaw).trim() : "",
+                kategori_id: categoryObj.id
+            });
+        } else {
+            console.warn(`Baris ${index+2}: Kode DDC '${codeStr}' tidak ditemukan di database.`);
+            errorCount++;
+        }
+    });
+
+    // 5. Validasi Hasil Mapping
+    if (payloadBatch.length === 0) {
+        Swal.fire({
+            title: 'Gagal Import',
+            html: `Tidak ada data yang cocok.<br><br>
+                   <b>Tips:</b><br>
+                   1. Pastikan Header Excel: "Judul Buku" dan "Kode DDC".<br>
+                   2. Pastikan Kode DDC (misal: 004, 005) sudah ada di Master Kategori.`,
+            icon: 'error'
+        });
+        return;
+    }
+
+    // 6. Konfirmasi User
+    const confirmResult = await Swal.fire({
+        title: 'Konfirmasi Import',
+        html: `Siap mengimport <b>${payloadBatch.length}</b> data?<br>
+               <span class="text-sm text-gray-500">(${errorCount} data diabaikan/tidak valid)</span>`,
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonText: 'Ya, Import Sekarang',
+        cancelButtonText: 'Batal'
+    });
+
+    if (!confirmResult.isConfirmed) return;
+
+    // 7. Kirim ke Server
+    Swal.fire({ 
+        title: 'Sedang Menyimpan...', 
+        html: 'Mohon tunggu sebentar.',
+        allowOutsideClick: false,
+        didOpen: () => Swal.showLoading() 
+    });
+
+    try {
+        const res = await fetch(`${API_URL}?action=import_excel`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payloadBatch)
+        });
+
+        const json = await res.json();
+
+        if (json.status === 'success') {
+            await Swal.fire('Sukses!', `Berhasil: ${json.data.imported}, Gagal: ${json.data.failed}`, 'success');
+            loadDataToTable(); // Reload tabel
+        } else {
+            throw new Error(json.message || 'Respon server error');
+        }
+    } catch (err) {
+        console.error(err);
+        Swal.fire('Error', 'Terjadi kesalahan saat menyimpan ke database.', 'error');
+    }
 }
 
+// --- UTILITIES ---
+function formatJudulBuku(str) { return str ? str.replace(/\w\S*/g, (txt) => txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase()) : ""; }
 function exportDataTraining() {
     if (globalDataTraining.length === 0) { showNotification('warning', 'Kosong', 'Tidak ada data.'); return; }
     const ws = XLSX.utils.json_to_sheet(globalDataTraining);
@@ -418,7 +533,6 @@ function exportDataTraining() {
     XLSX.utils.book_append_sheet(wb, ws, "Data");
     XLSX.writeFile(wb, "Data_Training.xlsx");
 }
-
 function populateFilterAndModal() {
     const filterSelect = document.getElementById("filterCategory");
     const modalSelect = document.getElementById("selectKategoriDDC");
@@ -429,7 +543,6 @@ function populateFilterAndModal() {
         modalSelect.add(new Option(`${k.kode_ddc} - ${k.nama_kategori}`, k.id));
     });
 }
-
 function openModalDataTraining(id = null) {
     document.getElementById('modal-data-training').classList.remove('hidden');
     document.getElementById('modal-data-training-title').textContent = id ? 'Edit Data' : 'Tambah Data';
